@@ -1,0 +1,149 @@
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<style>
+	td {padding-right: 5px;}
+</style>
+<form>
+<table style="padding-left: 5px;">
+<h3>Datenbereich</h3>
+	<tr>
+		<td>Zeile erste Beurteilung</td>
+		<td><input type="text" id="rowFirstData" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+
+	<tr>
+		<td>Spalte erste Kompetenz</td>
+		<td><input type="text" id="colFirstGrade" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+
+	<tr>
+		<td>Spalte letzte Kompetenz</td>
+		<td><input type="text" id="colLastGrade" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+
+	<tr>
+		<td>Spalte mit Usernamen</td>
+		<td><input type="text" id="spalteUsernamen" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+
+	</table>
+	<h3>Bewertung</h3>
+	<table style="padding-left: 5px;">
+	<tr>
+		<td>Minimale Punkte Anzahl</td>
+		<td><input type="text" id="punkteMin" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+	<tr>
+		<td>Maximale Punkte Anzahl</td>
+		<td><input type="text" id="punkteMax" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+	<!-- <tr>
+		<td>Bewertungsmethode</td>
+		<td>
+			<select id="noten" onchange="onSettingsChange()">
+				<option value="true">Noten</option>
+				<option value="false">Punkte</option>
+			</select>
+		</td>
+	</tr> -->
+	</table>
+	<h3>Erweitert</h3>
+	<table style="padding-left: 5px;">
+	<tr>
+		<td>Name Vorlage</td>
+		<td><input type="text" id="nameVorlage" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+	<tr>
+		<td>Marker Löschkandidat</td>
+		<td><input type="text" id="deletionMarker" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+	<tr>
+		<td>Name Auswertung</td>
+		<td><input type="text" id="sheetAuswertungName" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
+	</tr>
+	<tr>
+		<td colspan="2"><button type="button" onClick="generateSheets()" id="shettGenButton" class="create">Sheets generieren</button></td>
+	</tr>
+</table>
+<textarea rows="4" cols="50" id="saveButton" readonly></textarea>
+</form>
+<div id='result'></div>
+<script>
+getSettings();
+function setSettings(settings){
+	  document.getElementById("colFirstGrade").value = ((settings['colFirstGrade']).toString());
+	  document.getElementById("colLastGrade").value = ((settings['colLastGrade']).toString());
+	  document.getElementById("spalteUsernamen").value = settings['spalteUsernamen'];
+	  document.getElementById("rowFirstData").value = settings['rowFirstData'];
+	  document.getElementById("punkteMin").value = settings['punkteMin'];
+	  document.getElementById("punkteMax").value = settings['punkteMax'];
+// 	  document.getElementById("noten").value = settings['noten'];
+	  document.getElementById("nameVorlage").value = settings['nameVorlage'];
+	  document.getElementById("deletionMarker").value = settings['deletionMarker'];
+	  document.getElementById("sheetAuswertungName").value = settings['sheetAuswertungName'];
+}
+function getSettings() {
+
+        google.script.run.withSuccessHandler(setSettings).getSettings();
+}
+
+function saveSettings() {
+		var saveSettings = new Object();
+		saveSettings['colFirstGrade'] = document.getElementById("colFirstGrade").value;
+		saveSettings['colLastGrade'] = document.getElementById("colLastGrade").value;
+		saveSettings['spalteUsernamen'] = document.getElementById("spalteUsernamen").value;
+		saveSettings['rowFirstData'] = document.getElementById("rowFirstData").value;
+		saveSettings['punkteMin'] = document.getElementById("punkteMin").value;
+		saveSettings['punkteMax'] = document.getElementById("punkteMax").value;
+// 		saveSettings['noten'] = document.getElementById("noten").value;
+		saveSettings['nameVorlage'] = document.getElementById("nameVorlage").value;
+		saveSettings['deletionMarker'] = document.getElementById("deletionMarker").value;
+		saveSettings['sheetAuswertungName'] = document.getElementById("sheetAuswertungName").value;
+        google.script.run.saveDocumentProperties(saveSettings);
+        document.getElementById("saveButton").disabled = true;
+        document.getElementById("shettGenButton").disabled = false;
+}
+function onSettingsChange(){
+	document.getElementById("saveButton").disabled = false;
+	document.getElementById("shettGenButton").disabled = true;
+
+
+}
+function auswertung() {
+
+}
+function generateSheets() {
+	var div = document.getElementById('result');
+    div.innerHTML = '<div> Running...<br><img src="https://lh3.googleusercontent.com/EBdoICM79nLvDyKJmCLtgnfdBIJbQyCxZlTupaA-bEdx5vGK9_C8XOoBswkupLwFvqMyhV7ldrJGI1vZU9jBaFxj7QmJWUc_NKx3P_iH6bLAYHsn_HrchBrP915CYX1Y5UUtxO2afFMUC5aCNN0LdXgC51VPg2zVEvsBwqYNoNDO6orW4OMa4rl38GVYHpgxFZ2qYFt5ZFdr_GkW6RovGbwYM1dC5ynZLnufB2rblHmR7KNybmfuAaP-bxBL5I6v05RDnDhL3yv5Hxge_sQgq3G-xyAvp2UYvdCJl5PuJMMQ95OinWy1QwiOWrRdu58pihAhJcdCGZhZDYhDc4XM0MnKVad-OK0SgK8Tgbhr75BTiAOmKFXCuhk0qbMmILu5Xhd8nWiQsgMq2Z_Fx32JxaQLszpxTC27-2-UVJLzr8sqljeEMyNo8j2vSi0q5H3G2izriMOmZRbCymYF-nMdHBv63gRkrlFRuenJFA18kVhbrBVfhMNcrixsJZXLe4qKC2crElvr9BFSgi9x_QUFwiMVhRFbmY0hEGQg9JQbS-BAzpPKi3sw19WNaQ1DJBdQz76PMBdc3_WFehcqKqHBtU8arp4BsVZYDRai64QXGbo55eAjng=s96-no"></div>';
+    google.script.run
+    .withSuccessHandler(onGenerateSheetsSuccess)
+    .withFailureHandler(onFailure)
+    .generateSheets();
+
+
+}
+function onGenerateSheetsSuccess() {
+	google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .auswertung();
+}
+function onSuccess() {
+    var div = document.getElementById('result');
+    div.innerHTML = '<div>Sucess!</div>';
+  }
+function onFailure(error) {
+    var div = document.getElementById('result');
+    div.innerHTML = '<div>Fail! '+error.message+'</div>';
+  }
+function clickAction(){
+
+    google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .testSpinner();
+  }
+</script>
