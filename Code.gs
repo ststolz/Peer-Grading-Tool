@@ -8,9 +8,8 @@
 
 // #### Todo ####
 // TODO: settings['colLastGrade'] fertig machen
-// TODO: Durchschnitt Berechnung über Array, damit nicht ausgefüllte raus nehmen kann (Im Moment muss alles ausgefüllt sein für Wertung)
 
-var version = 0.45; 
+var version = 0.46; 
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = 2;
