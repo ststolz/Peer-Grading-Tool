@@ -9,7 +9,7 @@
 // #### Todo ####
 // TODO: settings['colLastGrade'] fertig machen
 
-var version = 0.46; 
+var version = 0.45; 
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = 2;
