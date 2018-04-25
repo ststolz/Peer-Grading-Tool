@@ -10,27 +10,25 @@
 // TODO: settings['colLastGrade'] fertig machen
 // TODO: Durchschnitt Berechnung über Array, damit nicht ausgefüllte raus nehmen kann (Im Moment muss alles ausgefüllt sein für Wertung)
 
-var version = 0.442;
+var version = 0.45; 
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = 2;
 settings['colLastGrade'] = 10;
 settings['spalteUsernamen'] = 1;
-settings['rowFirstData'] = 2;
+settings['rowFirstData'] = 2; 
 settings['punkteMin'] = 0;
 settings['punkteMax'] = 2;
 settings['noten'] = false;
 settings['nameVorlage'] = "Vorlage";
-settings['deletionMarker'] = "*";
-settings['sheetAuswertungName'] = "Auswertung";
+settings['deletionMarker'] = "*"; 
+settings['sheetAuswertungName'] = "Auswertung"; 
 settings['maxPointsText'] = "Erreichbare Punkte";
 settings['endRatingText'] = "Gesamtwertung";
 
 var documentProperties = PropertiesService.getDocumentProperties();
 
 getDocumentProperties();
-console.log('Script Header accessed');
-
 
 function getDocumentProperties(){
 	for (var k in settings){
@@ -41,7 +39,7 @@ function getDocumentProperties(){
 	    		Logger.log("Saved Property is: " + property);
 	    		switch(k){
 	    		    case 'version':
-	    			case 'noten':
+	    			case 'noten': 
 	    			case 'nameVorlage':
 	    			case 'deletionMarker':
 	    			case 'sheetAuswertungName':
@@ -52,7 +50,7 @@ function getDocumentProperties(){
 	    			default:
 	    				property = parseFloat(property);
 	    				break;
-	    		}
+	    		} 
 	    		settings[k]=property;
 	    	}
 	    	else {
@@ -60,11 +58,11 @@ function getDocumentProperties(){
 	    		documentProperties.setProperty(k,settings[k]);
 	    	}
 	    }
-
+	    
 	}
-
-
-
+	
+	
+	
 	//documentProperties.getProperty();
 }
 
@@ -75,27 +73,27 @@ function saveDocumentProperties(saveSettings){
 }
 
 function onOpen() {
-
+  
   var ui = SpreadsheetApp.getUi();
-
-  var menu = ui.createMenu('Vortragstools');
-
+  
+  var menu = ui.createMenu('Vortragstools');        
+  
   menu
     .addItem('Show sidebar', 'showSidebar')
     .addSeparator()
     .addItem('Manual', 'showManual');
-
-
-
+  
+  
+    
   menu.addItem('Version '+version, 'disclaimer')
   .addToUi();
-
+  
 }
-
+  
 function showManual(){
 	var html = HtmlService.createHtmlOutputFromFile('help');
 	  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
-	      .showModalDialog(html, 'Manual');
+	      .showModalDialog(html, 'Manual'); 
 }
 
 function getSettings(){
@@ -137,113 +135,110 @@ function generateUsernameArr(){
   var vorlageSheet = searchSheet(settings['nameVorlage']);
   var vorlageSheetData = vorlageSheet.getDataRange().getValues();
   var users = new Array(vorlageSheetData.length-(settings['rowFirstData']-1));
-
-  for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {
+  
+  for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {      
     var username = trim(vorlageSheetData[k][settings['spalteUsernamen']-1]);
     users[i] = username;
     Logger.log("generate: "+username);
   }
-  return users;
+  return users;  
 }
 
 function compareUsers(userArr){
-
+  
 }
 
 
-function generateSheets(){
-
-  console.log('Generate Sheets');
-  Browser.msgBox('Generate Sheets');
-
+function generateSheets(){    
+  
   Logger.log("Generate Sheets");
   Logger.log("sheetAuswertungName: "+settings['sheetAuswertungName']);
-
-  if(!isOwner()) return;
-
+	
+  if(!isOwner()) return;  
+  
   var isFirstRun = true;
-
+  
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var spreadsheets=activeSpreadsheet.getSheets();
-
-  var ui = SpreadsheetApp.getUi();
+  
+  var ui = SpreadsheetApp.getUi(); 
   if(spreadsheets.length > 1){
     //var result = ui.alert(
     //  'Achtung!',
     //  'Bei einer Änderung eines Usernamens werden die Daten des alten Usernamens gelöscht und ein neues Blatt erzeugt! Trotzdem fortfahren?',
     //  ui.ButtonSet.YES_NO);
-
+    
     // Process the user's response.
     //if (result == ui.Button.YES) {
       isFirstRun = false;
-    //}
+    //} 
     //else {
     //  return;
     //}
-
+    
   }
-
+  
   // ### Search for Vorlage ###
   var vorlageSheet = searchSheet(settings['nameVorlage']);
   if( ! vorlageSheet){
     Browser.msgBox('Fehler! Kein Sheet mit dem Namen '+settings['nameVorlage']+' gefunden. Breche ab...');
     return;
   }
-
-
-
+  
+  
+  
   var vorlageSheetRange = vorlageSheet.getDataRange();
-
-
+  
+  
   // ### Protect Vorlage ###
-  var protection = vorlageSheet.protect().setDescription('Sheet Protection');
-  var me = Session.getEffectiveUser();
+  var protection = vorlageSheet.protect().setDescription('Sheet Protection');  
+  var me = Session.getEffectiveUser();   
   protection.addEditor(me);
   protection.removeEditors(protection.getEditors());
-
+  
   if (protection.canDomainEdit()) {
     protection.setDomainEdit(false);
   }
-
+  
   var vorlageSheetData = vorlageSheetRange.getValues();
   //Feststellen wie viele Spalten und Zeilen in Tabelle
-  // * var sheetData = vorlageSheet.getDataRange().getValues();
+  // * var sheetData = vorlageSheet.getDataRange().getValues();    
   var rowsN = vorlageSheetData.length;
   var colsN = vorlageSheetData[0].length;
-
+  
   Logger.log("Start username ");
-
+ 
   // Get User Array
   var users = generateUsernameArr();
   //### Validation that data in Range of allowed points
   var vorlageSheetGradeRange = vorlageSheet.getRange(settings['rowFirstData'],settings['colFirstGrade'],users.length,vorlageSheetRange.getLastColumn()-settings['colFirstGrade']);
   var rule = SpreadsheetApp.newDataValidation().requireNumberBetween(parseFloat(settings['punkteMin']), parseFloat(settings['punkteMax'])).setAllowInvalid(false).build();
   vorlageSheetGradeRange.setDataValidation(rule);
-
-
+  
+    
   // ### Document Edit Rights for Users ###
-  for(var i = 0; i < users.length; i++){
+  for(var i = 0; i < users.length; i++){ 
     var username = users[i];
-
+    
     if(username != ""){
       activeSpreadsheet.addEditor(username);
       Logger.log(username);
     }
   }
-
-
+  
+  
   // ### Walk through lines with Usernames ###
-  for(var i = 0; i < users.length; i++){
-
+  for(var i = 0; i < users.length; i++){ 
+    
     var username = users[i];
-
-
+    
+    
     if(username == ""){ continue; }
-
+    
     var newSheet;
-
+    
     var isExisting = false;
-
+    
     // ### Check if Sheet is already existing ###
     if(!isFirstRun){
       newSheet = searchSheet(username);
@@ -251,79 +246,79 @@ function generateSheets(){
         isExisting = true;
         var existingSheetData = newSheet.getDataRange().getValues();
         // * If sheet is existing, update users
-//        for (var j = (settings['rowFirstData']-1), k = 0; k < users.length; j++, k++) {
-//          if(existingSheetData.length <= j || existingSheetData[j][settings['spalteUsernamen']-1] != users[k]){
+//        for (var j = (settings['rowFirstData']-1), k = 0; k < users.length; j++, k++) {    
+//          if(existingSheetData.length <= j || existingSheetData[j][settings['spalteUsernamen']-1] != users[k]){            
 //            newSheet.getRange(j+1, settings['spalteUsernamen']).setValue(users[k]);
-//          }
+//          }          
 //        }
         // Update complete sheet except grading data
-        for (var r = 0; r < rowsN; r++) {
+        for (var r = 0; r < rowsN; r++) { 
         	for(var c = 0; c < colsN; c++){
         		//if no grading data -> update if different
-        		//Logger.log("Row: "+(r+1)+", Col: "+(c+1));
+        		//Logger.log("Row: "+(r+1)+", Col: "+(c+1));        		
         		//Logger.log("Row length: "+(existingSheetData.length)+", Col length: "+(existingSheetData[0].length));
         		if(!(r > settings['rowFirstData']-2 && c > settings['colFirstGrade']-2 && c < colsN-1)){
         			//Logger.log("Nicht im Bereich");
         			//|| existingSheetData[r][c] != vorlageSheetData[r][c]
-        			//(existingSheetData.length <= r || existingSheetData[r].length <= c)
+        			//(existingSheetData.length <= r || existingSheetData[r].length <= c) 
         			if(true){
         				//Logger.log("Vorlage: "+vorlageSheetData[r][c]+", Hier: "+existingSheetData[r][c]);
         				newSheet.getRange(r+1, c+1).setValue(vorlageSheetData[r][c]);
         			}
-        		}
+        		}  
         		//Logger.log("Neue Spalte");
-        	}
+        	}        	
         }
-      }
+      }        
     }
-
+    
     if(isFirstRun || ! isExisting){
-      newSheet = vorlageSheet.copyTo(activeSpreadsheet);
+      newSheet = vorlageSheet.copyTo(activeSpreadsheet);    
     }
-
+    
     // ### Remove old Protections ###
     var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.RANGE);
     for (var j = 0; j < protections.length; j++) {
       var protection = protections[j];
-      protection.remove();
+      protection.remove();      
     }
     var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET);
     for (var j = 0; j < protections.length; j++) {
       var protection = protections[j];
-      protection.remove();
+      protection.remove();      
     }
-
+    
     // ### Sheet Protection ###
     var protection = newSheet.protect().setDescription('Sheet Protection');
-
+    
     // Bereich berechnen in dem Reviews stehen
     var unprotected = newSheet.getRange(settings['rowFirstData'],settings['colFirstGrade'],rowsN - (settings['rowFirstData']-1), colsN - settings['colFirstGrade']);
-
+    
     // Bereich mit Reviews von Protection ausnehmen
-    protection.setUnprotectedRanges([unprotected]);
-
+    protection.setUnprotectedRanges([unprotected]);    
+    
     var me = Session.getEffectiveUser();
-
+    
     protection.addEditor(me);
     protection.removeEditors(protection.getEditors());
     if (protection.canDomainEdit()) {
       protection.setDomainEdit(false);
     }
-
+    
     // ### Range Protection ###
-    var protectRange = unprotected.protect().setDescription('Range Protection');
+    var protectRange = unprotected.protect().setDescription('Range Protection'); 
     protectRange.addEditor(me);
     protectRange.removeEditors(protectRange.getEditors());
     if (protectRange.canDomainEdit()) {
       protectRange.setDomainEdit(false);
     }
     protectRange.addEditor(username);
-
+    
     //protection = protection.addEditor(username);
     if(newSheet.getName() != username){
       newSheet.setName(username);
     }
-
+    
   }
   //### Mark not existing Users ###
   for (var i = 0; i < spreadsheets.length; i++) {
@@ -333,40 +328,40 @@ function generateSheets(){
       var username = trim(vorlageSheetData[k][settings['spalteUsernamen']-1]);
       if(username == sheet.getName()){
         isUserExisting = true;
-      }
-    }
+      }        
+    }    
     if(!isUserExisting && sheet.getName().indexOf(settings['deletionMarker']) != 0 && settings['nameVorlage'] != sheet.getName() && settings['sheetAuswertungName'] != sheet.getName()){
       var sheetDeletionMarkerName = settings['deletionMarker'] + " " + sheet.getName();
       if(searchSheet(sheetDeletionMarkerName)){
     	  activeSpreadsheet.deleteSheet(searchSheet(sheetDeletionMarkerName));
-      }
+      }      
       sheet.setName(sheetDeletionMarkerName);
     }
   }
 }
 
 function auswertung() {
-
-  if(!isOwner()) return;
-
+  
+  if(!isOwner()) return;    
+      
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var spreadsheets=activeSpreadsheet.getSheets();
-
-
+      
+  
   /*var auswertungSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Auswertung");
   if (auswertungSheet == null) {
     Logger.log("Sheet -Auswertung- fehlt");
     return;
   }*/
-
+  
   // Daten von Auswertung durch gehen
   /*var auswertungData = auswertungSheet.getDataRange().getValues();
   for (var i = 1; i < auswertungData.length; i++) {
     Logger.log('User name: ' + auswertungData[i][0]);
-  }*/
-
-
-  // create new Sheet - if exists, delete first
+  }*/ 
+  
+  
+  // create new Sheet - if exists, delete first  
     activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     var yourNewSheet = activeSpreadsheet.getSheetByName(settings['sheetAuswertungName']);
 
@@ -377,34 +372,34 @@ function auswertung() {
     yourNewSheet = activeSpreadsheet.insertSheet();
     yourNewSheet.setName(settings['sheetAuswertungName']);
     //Logger.log('sheetAuswertungName in Auswertung: ' +settings['sheetAuswertungName']);
-
+  
   activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   spreadsheets=activeSpreadsheet.getSheets();
-
+  
   var row = 1;
-
+  
   yourNewSheet.getRange(row, 1).setValue("Bewerteter");
-
+  
   row++;
-
+  
   var firstRowOfUserData;
-
-  // Walk through sheets to get users
+  
+  // Walk through sheets to get users  
   for (var i = 0; i < spreadsheets.length; i++) {
      var bewerteter = spreadsheets[i].getName();
      Logger.log('Bewerteter: ' + bewerteter);
      if(bewerteter != settings['sheetAuswertungName'] && bewerteter.indexOf(settings['deletionMarker']) != 0 && bewerteter != settings['nameVorlage'] ){
-
+    	 
        yourNewSheet.getRange(row, 1).setValue(bewerteter).setFontWeight("bold");
        row++;
-
+       
        // ### Headings ###
        // sheetData row in first dimension, col in second
        var sheetData = spreadsheets[i].getDataRange().getValues();
        var sheetName = spreadsheets[i].getName();
        // Create Array for later mean calculation
        var competences = new Array(sheetData[0].length - (settings['colFirstGrade']-1));
-
+       
        for (var j = 0; j < competences.length; j++) {
          competences[j]= new Array(sheetData.length);
        }
@@ -412,15 +407,15 @@ function auswertung() {
        var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(settings['colFirstGrade'])-1);
        weightingHeader.setValue(settings['maxPointsText']);
        // Walk through headings
-       for (var k = 0; k < sheetData[0].length - (settings['colFirstGrade']); k++) {
+       for (var k = 0; k < sheetData[0].length - (settings['colFirstGrade']); k++) {    
     	 //Logger.log("sheetData: "+(settings['rowFirstData']-3)+"; "+(settings['colFirstGrade']-1+k));
     	 var heading = sheetData[settings['rowFirstData']-3][settings['colFirstGrade']-1+k];
     	 var weighting = sheetData[settings['rowFirstData']-2][settings['colFirstGrade']-1+k];
-
+    	 
     	 //Logger.log('Heading: ' + (settings['colFirstGrade']+k));
          var headingCell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+k);
          headingCell.setValue("='"+sheetName+"'!"+columnToLetter(settings['colFirstGrade']-1+1+k)+(settings['rowFirstData']-2));
-
+         
          var weightingCell = yourNewSheet.getRange(row+1, parseFloat(settings['colFirstGrade'])+k);
     	 //var headingCell = yourNewSheet.getRange(row, 5);
          //headingCell.setValue("='"+sheetName+"'!"+columnToLetter(settings['colFirstGrade']-1+k)+settings['rowFirstData']-3);
@@ -432,22 +427,22 @@ function auswertung() {
        resultsHeader.setValue(settings['endRatingText']);
        // Two times for Headers and Weightings
        row++;row++;
-
+       
        firstRowOfUserData = row;
-
+       
        var counterUsers = 0;
-
+       
        // Walk through sheets to get data for user
        for (var j = 0; j < spreadsheets.length; j++) {
          var sheet = spreadsheets[j];
          var bewerter = sheet.getName();
-
+         
          if(bewerter != settings['sheetAuswertungName'] && bewerter != bewerteter && sheet.getName().indexOf(settings['deletionMarker']) != 0 && settings['nameVorlage'] != sheet.getName()){
-
+           
            yourNewSheet.getRange(row, 2).setValue(bewerter);
-
-           var sheetData = sheet.getDataRange().getValues();
-
+           
+           var sheetData = sheet.getDataRange().getValues();           
+           
            // Walk through reviews
            // Walk through lines
            for (var k = 0; k < sheetData.length; k++) {
@@ -461,48 +456,48 @@ function auswertung() {
                // Walk through all cols
                for(var l = 0; l < colsWithData; l++){
                  var val = sheetData[k][parseFloat(settings['colFirstGrade'])+l-1];
-
+                 
                  // Fill Array for later mean calc
                  // Only if in range of points
                  //Logger.log(l+' -- '+ counterUsers + ' - ' + val+' isInRange: ' );
                  if(isInPointsRange(val) && l < colsWithData -1){
-                   competences[l][counterUsers] = val;
-
+                   competences[l][counterUsers] = val;                 
+                 
                    //Logger.log(l+' -- '+ counterUsers + ' - ' + val);
                    // Write Val to cell
                    //var cell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue(val);
-
+                   
                  }
                  else{
                    var cell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("");
                  }
-
+                 
                  //Logger.log('Wert2: ' + k);
                  var columnGrade = columnToLetter((parseFloat(settings['colFirstGrade'])+l));
                  /* set link to user rating value */
                  var cell =  yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
-
+                 
                  /* Calc Row Mean if last col */
-                 if(l+1 == colsWithData){
-
+                 if(l+1 == colsWithData){               	 
+                	                	 
                 	 var firstColData = parseFloat(settings['colFirstGrade']);
-                	 var lastColData = parseFloat(settings['colFirstGrade']) + colsWithData -2;
-                	 var rangeGrades = columnToLetter(firstColData)+row+":"+columnToLetter(lastColData)+row;
+                	 var lastColData = parseFloat(settings['colFirstGrade']) + colsWithData -2;                	 
+                	 var rangeGrades = columnToLetter(firstColData)+row+":"+columnToLetter(lastColData)+row; 
                 	 var rangeWeights = columnToLetter(firstColData)+(settings['rowFirstData']-1)+":"+columnToLetter(lastColData)+(settings['rowFirstData']-1);
-
+                	 
                 	 var sumWeights = "SUMIFS('"+settings['nameVorlage']+"'!"+rangeWeights+";'"+bewerter+"'!"+columnToLetter(firstColData)+(k+1)+":"+columnToLetter(lastColData)+(k+1)+";\"<>\")";
                 	 yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/"+sumWeights+";2);\"\")");
-
+                	                 	
                  }
-
-                 /* Set Border if not last col */
+                 
+                 /* Set Border if not last col */                 
                  else{
                    cell.setBorder(true, true, true, true, true, true);
                  }
-               }
-             }
-           }
-
+               }               
+             }  
+           }         
+         
            row++;
            counterUsers++;
          }
@@ -523,26 +518,26 @@ function auswertung() {
 //         yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+x).setValue(sum / count).setFontWeight("bold");
     	 var rangeForCalc = columnToLetter(parseFloat(settings['colFirstGrade'])+x)+firstRowOfUserData+":"+columnToLetter(parseFloat(settings['colFirstGrade'])+x)+(row-1);
          yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold");
-
+         
        }
        row++;
-
-
+       
+       
      }
    }
   resizeAllColumns(yourNewSheet, 2);
 }
 
 function resizeAllColumns(sheet,num){
-
-  var sheetData = sheet.getDataRange().getValues();
-
-
+  
+  var sheetData = sheet.getDataRange().getValues();  
+           
+  
   // Walk through all cols
   for(var l = 1; l <= num; l++){
     Logger.log("Col: "+l);
     sheet.autoResizeColumn(l);
-
+    
   }
 }
 
@@ -562,21 +557,21 @@ function trim(stringToTrim) {
 }
 
 function isOwner(){
-
+	
 
 	return true;
-
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-
-  var owner = activeSpreadsheet.getOwner();
+	
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();  
+  
+  var owner = activeSpreadsheet.getOwner();  
   var activeUser =  Session.getActiveUser();
-
+  
   Logger.log('activeUser id: '+ activeUser.getEmail() + ' owner id: ' + owner.getEmail());
-
-  if(owner.getEmail() == activeUser.getEmail()){
+  
+  if(owner.getEmail() == activeUser.getEmail()){ 
 	  Logger.log('Is owner!');
 	  return true; }
-  else {
+  else { 
 	  Logger.log('Not owner!');
 	  return false};
 }

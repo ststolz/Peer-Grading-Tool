@@ -3,31 +3,31 @@
 	td {padding-right: 5px;}
 </style>
 <form>
-<table style="padding-left: 5px;">
+<table style="padding-left: 5px;"> 
 <h3>Datenbereich</h3>
 	<tr>
 		<td>Zeile erste Beurteilung</td>
 		<td><input type="text" id="rowFirstData" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
-
+	
 	<tr>
 		<td>Spalte erste Kompetenz</td>
 		<td><input type="text" id="colFirstGrade" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
-
+	
 	<tr>
 		<td>Spalte letzte Kompetenz</td>
 		<td><input type="text" id="colLastGrade" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
-
+	
 	<tr>
 		<td>Spalte mit Usernamen</td>
 		<td><input type="text" id="spalteUsernamen" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
-
+	
 	</table>
 	<h3>Bewertung</h3>
-	<table style="padding-left: 5px;">
+	<table style="padding-left: 5px;"> 
 	<tr>
 		<td>Minimale Punkte Anzahl</td>
 		<td><input type="text" id="punkteMin" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -35,7 +35,7 @@
 	<tr>
 		<td>Maximale Punkte Anzahl</td>
 		<td><input type="text" id="punkteMax" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
-	</tr>
+	</tr>	
 	<!-- <tr>
 		<td>Bewertungsmethode</td>
 		<td>
@@ -47,7 +47,7 @@
 	</tr> -->
 	</table>
 	<h3>Erweitert</h3>
-	<table style="padding-left: 5px;">
+	<table style="padding-left: 5px;"> 
 	<tr>
 		<td>Name Vorlage</td>
 		<td><input type="text" id="nameVorlage" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -63,12 +63,11 @@
 	<tr>
 		<td></td>
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
-	</tr>
+	</tr>	
 	<tr>
 		<td colspan="2"><button type="button" onClick="generateSheets()" id="shettGenButton" class="create">Sheets generieren</button></td>
 	</tr>
 </table>
-<textarea rows="4" cols="50" id="saveButton" readonly></textarea>
 </form>
 <div id='result'></div>
 <script>
@@ -82,14 +81,14 @@ function setSettings(settings){
 	  document.getElementById("punkteMax").value = settings['punkteMax'];
 // 	  document.getElementById("noten").value = settings['noten'];
 	  document.getElementById("nameVorlage").value = settings['nameVorlage'];
-	  document.getElementById("deletionMarker").value = settings['deletionMarker'];
-	  document.getElementById("sheetAuswertungName").value = settings['sheetAuswertungName'];
+	  document.getElementById("deletionMarker").value = settings['deletionMarker']; 
+	  document.getElementById("sheetAuswertungName").value = settings['sheetAuswertungName']; 
 }
 function getSettings() {
-
+	
         google.script.run.withSuccessHandler(setSettings).getSettings();
 }
-
+      
 function saveSettings() {
 		var saveSettings = new Object();
 		saveSettings['colFirstGrade'] = document.getElementById("colFirstGrade").value;
@@ -109,11 +108,11 @@ function saveSettings() {
 function onSettingsChange(){
 	document.getElementById("saveButton").disabled = false;
 	document.getElementById("shettGenButton").disabled = true;
-
-
+	
+	
 }
 function auswertung() {
-
+    
 }
 function generateSheets() {
 	var div = document.getElementById('result');
@@ -122,8 +121,8 @@ function generateSheets() {
     .withSuccessHandler(onGenerateSheetsSuccess)
     .withFailureHandler(onFailure)
     .generateSheets();
-
-
+    
+    
 }
 function onGenerateSheetsSuccess() {
 	google.script.run
@@ -140,7 +139,7 @@ function onFailure(error) {
     div.innerHTML = '<div>Fail! '+error.message+'</div>';
   }
 function clickAction(){
-
+    
     google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
