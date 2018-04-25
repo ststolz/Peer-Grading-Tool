@@ -60,6 +60,14 @@
 		<td>Name Auswertung</td>
 		<td><input type="text" id="sheetAuswertungName" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
+    <tr>
+		<td>Name erreichbare Punkte</td>
+		<td><input type="text" id="maxPointsText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+    <tr>
+		<td>Name Gesamtwertung</td>
+		<td><input type="text" id="endRatingText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
 	<tr>
 		<td></td>
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
@@ -83,6 +91,8 @@ function setSettings(settings){
 	  document.getElementById("nameVorlage").value = settings['nameVorlage'];
 	  document.getElementById("deletionMarker").value = settings['deletionMarker']; 
 	  document.getElementById("sheetAuswertungName").value = settings['sheetAuswertungName']; 
+      document.getElementById("maxPointsText").value = settings['maxPointsText']; 
+      document.getElementById("endRatingText").value = settings['endRatingText']; 
 }
 function getSettings() {
 	
@@ -101,6 +111,8 @@ function saveSettings() {
 		saveSettings['nameVorlage'] = document.getElementById("nameVorlage").value;
 		saveSettings['deletionMarker'] = document.getElementById("deletionMarker").value;
 		saveSettings['sheetAuswertungName'] = document.getElementById("sheetAuswertungName").value;
+        saveSettings['maxPointsText'] = document.getElementById("maxPointsText").value;
+        saveSettings['endRatingText'] = document.getElementById("endRatingText").value;
         google.script.run.saveDocumentProperties(saveSettings);
         document.getElementById("saveButton").disabled = true;
         document.getElementById("shettGenButton").disabled = false;
