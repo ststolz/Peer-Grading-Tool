@@ -394,7 +394,7 @@ function auswertung() {
   
   var row = 1;
   
-  yourNewSheet.getRange(row, 1).setValue("Bewerteter");
+  yourNewSheet.getRange(row, 1).setValue("Rated Person");
   
   row++;
   
@@ -519,7 +519,7 @@ function auswertung() {
          }
        }
        // Calc mean values
-       yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue("Durchschnitt").setFontWeight("bold");
+       yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue("Average").setFontWeight("bold");
        for (var x = 0; x < competences.length; x++) {
 //         var sum = 0;
 //         var count = 0;
