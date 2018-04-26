@@ -121,7 +121,7 @@ function getSettings(){
 }
 
 function showSidebar() {
-	  var html = HtmlService.createHtmlOutputFromFile('SIDEBAR3.html')
+	  var html = HtmlService.createHtmlOutputFromFile('sidebar.html')
 	      .setTitle('Peer Grading Tool v'+version)
 	      .setWidth(300);
 	  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
