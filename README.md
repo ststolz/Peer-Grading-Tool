@@ -1,4 +1,4 @@
-# About
+# Peer-Grading Tool for Google Spreadsheets
 
 **Peer-Grading Tool** is a plugin for *Google Spreadsheets*. It is intended for educational use cases where students should grade each other.
 
@@ -9,6 +9,8 @@ You have several options for configuration of this process. This include:
 * **Skills** which are rated
 * **Weighting** of every Skill
 * **Rating Points** - Min and Max points students can use for Rating
+
+![Sheet generation process of Peer-Grading Tool](images/2018/04/Peer-Grading-sheet_generation_process.gif)
 
 # Why do I need this plugin
 
