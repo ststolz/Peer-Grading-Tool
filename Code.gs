@@ -23,21 +23,21 @@
 // #### Todo ####
 // TODO: settings['colLastGrade'] fertig machen
 
-var version = 0.50; 
+var version = 0.51; 
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = "C";
 settings['colLastGrade'] = "H";
 settings['spalteUsernamen'] = "B";
-settings['rowFirstData'] = 2; 
+settings['rowFirstData'] = 4; 
 settings['punkteMin'] = 0;
 settings['punkteMax'] = 2;
 settings['noten'] = false;
-settings['nameVorlage'] = "Vorlage";
+settings['nameVorlage'] = "Template";
 settings['deletionMarker'] = "*"; 
-settings['sheetAuswertungName'] = "Auswertung"; 
-settings['maxPointsText'] = "Erreichbare Punkte";
-settings['endRatingText'] = "Gesamtwertung";
+settings['sheetAuswertungName'] = "Evaluation"; 
+settings['maxPointsText'] = "Max Points";
+settings['endRatingText'] = "Rating (max. 2)";
 
 var documentProperties = PropertiesService.getDocumentProperties();
 
