@@ -28,7 +28,7 @@ var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = "C";
 settings['colLastGrade'] = "H";
-settings['spalteUsernamen'] = 1;
+settings['spalteUsernamen'] = "B";
 settings['rowFirstData'] = 2; 
 settings['punkteMin'] = 0;
 settings['punkteMax'] = 2;
@@ -58,6 +58,9 @@ function getDocumentProperties(){
 	    			case 'sheetAuswertungName':
 	    			case 'maxPointsText':
 	    			case 'endRatingText':
+                    case 'colFirstGrade':
+                    case 'colLastGrade':
+                    case 'spalteUsernamen':
 	    				property = property;
 	    				break;
 	    			default:
@@ -150,7 +153,7 @@ function generateUsernameArr(){
   var users = new Array(vorlageSheetData.length-(settings['rowFirstData']-1));
   
   for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {      
-    var username = trim(vorlageSheetData[k][settings['spalteUsernamen']-1]);
+    var username = trim(vorlageSheetData[k][letterToColumn(settings['spalteUsernamen'])-1]);
     users[i] = username;
     Logger.log("generate: "+username);
   }
@@ -224,7 +227,7 @@ function generateSheets(){
   // Get User Array
   var users = generateUsernameArr();
   //### Validation that data in Range of allowed points
-  var vorlageSheetGradeRange = vorlageSheet.getRange(settings['rowFirstData'],settings['colFirstGrade'],users.length,vorlageSheetRange.getLastColumn()-settings['colFirstGrade']);
+  var vorlageSheetGradeRange = vorlageSheet.getRange(settings['rowFirstData'],letterToColumn(settings['colFirstGrade']),users.length,vorlageSheetRange.getLastColumn()-letterToColumn(settings['colFirstGrade']));
   var rule = SpreadsheetApp.newDataValidation().requireNumberBetween(parseFloat(settings['punkteMin']), parseFloat(settings['punkteMax'])).setAllowInvalid(false).build();
   vorlageSheetGradeRange.setDataValidation(rule);
   
@@ -260,8 +263,8 @@ function generateSheets(){
         var existingSheetData = newSheet.getDataRange().getValues();
         // * If sheet is existing, update users
 //        for (var j = (settings['rowFirstData']-1), k = 0; k < users.length; j++, k++) {    
-//          if(existingSheetData.length <= j || existingSheetData[j][settings['spalteUsernamen']-1] != users[k]){            
-//            newSheet.getRange(j+1, settings['spalteUsernamen']).setValue(users[k]);
+//          if(existingSheetData.length <= j || existingSheetData[j][letterToColumn(settings['spalteUsernamen'])-1] != users[k]){            
+//            newSheet.getRange(j+1, letterToColumn(settings['spalteUsernamen'])).setValue(users[k]);
 //          }          
 //        }
         // Update complete sheet except grading data
@@ -270,7 +273,7 @@ function generateSheets(){
         		//if no grading data -> update if different
         		//Logger.log("Row: "+(r+1)+", Col: "+(c+1));        		
         		//Logger.log("Row length: "+(existingSheetData.length)+", Col length: "+(existingSheetData[0].length));
-        		if(!(r > settings['rowFirstData']-2 && c > settings['colFirstGrade']-2 && c < colsN-1)){
+        		if(!(r > settings['rowFirstData']-2 && c > letterToColumn(settings['colFirstGrade'])-2 && c < colsN-1)){
         			//Logger.log("Nicht im Bereich");
         			//|| existingSheetData[r][c] != vorlageSheetData[r][c]
         			//(existingSheetData.length <= r || existingSheetData[r].length <= c) 
@@ -305,7 +308,7 @@ function generateSheets(){
     var protection = newSheet.protect().setDescription('Sheet Protection');
     
     // Bereich berechnen in dem Reviews stehen
-    var unprotected = newSheet.getRange(settings['rowFirstData'],settings['colFirstGrade'],rowsN - (settings['rowFirstData']-1), colsN - settings['colFirstGrade']);
+    var unprotected = newSheet.getRange(settings['rowFirstData'],letterToColumn(settings['colFirstGrade']),rowsN - (settings['rowFirstData']-1), colsN - letterToColumn(settings['colFirstGrade']));
     
     // Bereich mit Reviews von Protection ausnehmen
     protection.setUnprotectedRanges([unprotected]);    
@@ -338,7 +341,7 @@ function generateSheets(){
     var sheet = spreadsheets[i];
     var isUserExisting = false;
     for (var k = (settings['rowFirstData']-1); k < vorlageSheetData.length; k++) {
-      var username = trim(vorlageSheetData[k][settings['spalteUsernamen']-1]);
+      var username = trim(vorlageSheetData[k][letterToColumn(settings['spalteUsernamen'])-1]);
       if(username == sheet.getName()){
         isUserExisting = true;
       }        
@@ -411,28 +414,28 @@ function auswertung() {
        var sheetData = spreadsheets[i].getDataRange().getValues();
        var sheetName = spreadsheets[i].getName();
        // Create Array for later mean calculation
-       var competences = new Array(sheetData[0].length - (settings['colFirstGrade']-1));
+       var competences = new Array(sheetData[0].length - (letterToColumn(settings['colFirstGrade'])-1));
        
        for (var j = 0; j < competences.length; j++) {
          competences[j]= new Array(sheetData.length);
        }
        Logger.log("competences.length: "+competences.length);
-       var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(settings['colFirstGrade'])-1);
+       var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
        weightingHeader.setValue(settings['maxPointsText']);
        // Walk through headings
-       for (var k = 0; k < sheetData[0].length - (settings['colFirstGrade']); k++) {    
-    	 //Logger.log("sheetData: "+(settings['rowFirstData']-3)+"; "+(settings['colFirstGrade']-1+k));
-    	 var heading = sheetData[settings['rowFirstData']-3][settings['colFirstGrade']-1+k];
-    	 var weighting = sheetData[settings['rowFirstData']-2][settings['colFirstGrade']-1+k];
+       for (var k = 0; k < sheetData[0].length - (letterToColumn(settings['colFirstGrade'])); k++) {    
+    	 //Logger.log("sheetData: "+(settings['rowFirstData']-3)+"; "+(letterToColumn(settings['colFirstGrade'])-1+k));
+    	 var heading = sheetData[settings['rowFirstData']-3][letterToColumn(settings['colFirstGrade'])-1+k];
+    	 var weighting = sheetData[settings['rowFirstData']-2][letterToColumn(settings['colFirstGrade'])-1+k];
     	 
-    	 //Logger.log('Heading: ' + (settings['colFirstGrade']+k));
-         var headingCell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+k);
-         headingCell.setValue("='"+sheetName+"'!"+columnToLetter(settings['colFirstGrade']-1+1+k)+(settings['rowFirstData']-2));
+    	 //Logger.log('Heading: ' + (letterToColumn(settings['colFirstGrade'])+k));
+         var headingCell = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+k);
+         headingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-2));
          
-         var weightingCell = yourNewSheet.getRange(row+1, parseFloat(settings['colFirstGrade'])+k);
+         var weightingCell = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))+k);
     	 //var headingCell = yourNewSheet.getRange(row, 5);
-         //headingCell.setValue("='"+sheetName+"'!"+columnToLetter(settings['colFirstGrade']-1+k)+settings['rowFirstData']-3);
-         weightingCell.setValue("='"+sheetName+"'!"+columnToLetter(settings['colFirstGrade']-1+1+k)+(settings['rowFirstData']-1)+"*"+settings['punkteMax']);
+         //headingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+k)+settings['rowFirstData']-3);
+         weightingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-1)+"*"+settings['punkteMax']);
          //headingCell.setFontWeight("bold");
        }
        // Set Text for endrating
@@ -461,14 +464,14 @@ function auswertung() {
            for (var k = 0; k < sheetData.length; k++) {
              // If line is for reviewed person
         	 // Logger.log('Wert1: ' + k);
-             //Logger.log('settings['spalteUsernamen']: '+ sheetData[k][settings['spalteUsernamen']-1]+' -- bewerteter: '+bewerteter);
-             if(sheetData[k][settings['spalteUsernamen']-1] == bewerteter){
+             //Logger.log('letterToColumn(settings['spalteUsernamen']): '+ sheetData[k][letterToColumn(settings['spalteUsernamen'])-1]+' -- bewerteter: '+bewerteter);
+             if(sheetData[k][letterToColumn(settings['spalteUsernamen'])-1] == bewerteter){
                //Logger.log('Bewerteter: ' + bewerteter);
                // calc number of cols with data
-               var colsWithData = sheetData[k].length - (settings['colFirstGrade']-1);
+               var colsWithData = sheetData[k].length - (letterToColumn(settings['colFirstGrade'])-1);
                // Walk through all cols
                for(var l = 0; l < colsWithData; l++){
-                 var val = sheetData[k][parseFloat(settings['colFirstGrade'])+l-1];
+                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                  
                  // Fill Array for later mean calc
                  // Only if in range of points
@@ -478,28 +481,28 @@ function auswertung() {
                  
                    //Logger.log(l+' -- '+ counterUsers + ' - ' + val);
                    // Write Val to cell
-                   //var cell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue(val);
+                   //var cell = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue(val);
                    
                  }
                  else{
-                   var cell = yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("");
+                   var cell = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("");
                  }
                  
                  //Logger.log('Wert2: ' + k);
-                 var columnGrade = columnToLetter((parseFloat(settings['colFirstGrade'])+l));
+                 var columnGrade = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+l);
                  /* set link to user rating value */
-                 var cell =  yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
+                 var cell =  yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                  
                  /* Calc Row Mean if last col */
                  if(l+1 == colsWithData){               	 
                 	                	 
-                	 var firstColData = parseFloat(settings['colFirstGrade']);
-                	 var lastColData = parseFloat(settings['colFirstGrade']) + colsWithData -2;                	 
+                	 var firstColData = parseFloat(letterToColumn(settings['colFirstGrade']));
+                	 var lastColData = parseFloat(letterToColumn(settings['colFirstGrade'])) + colsWithData -2;                	 
                 	 var rangeGrades = columnToLetter(firstColData)+row+":"+columnToLetter(lastColData)+row; 
                 	 var rangeWeights = columnToLetter(firstColData)+(settings['rowFirstData']-1)+":"+columnToLetter(lastColData)+(settings['rowFirstData']-1);
                 	 
                 	 var sumWeights = "SUMIFS('"+settings['nameVorlage']+"'!"+rangeWeights+";'"+bewerter+"'!"+columnToLetter(firstColData)+(k+1)+":"+columnToLetter(lastColData)+(k+1)+";\"<>\")";
-                	 yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/"+sumWeights+";2);\"\")");
+                	 yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/"+sumWeights+";2);\"\")");
                 	                 	
                  }
                  
@@ -516,7 +519,7 @@ function auswertung() {
          }
        }
        // Calc mean values
-       yourNewSheet.getRange(row, settings['colFirstGrade']-1).setValue("Durchschnitt").setFontWeight("bold");
+       yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue("Durchschnitt").setFontWeight("bold");
        for (var x = 0; x < competences.length; x++) {
 //         var sum = 0;
 //         var count = 0;
@@ -528,9 +531,9 @@ function auswertung() {
 //           }
 //           //Logger.log(i+' - '+ j + ' -> ' +  competences[x][j]);
 //         }
-//         yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+x).setValue(sum / count).setFontWeight("bold");
-    	 var rangeForCalc = columnToLetter(parseFloat(settings['colFirstGrade'])+x)+firstRowOfUserData+":"+columnToLetter(parseFloat(settings['colFirstGrade'])+x)+(row-1);
-         yourNewSheet.getRange(row, parseFloat(settings['colFirstGrade'])+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold");
+//         yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue(sum / count).setFontWeight("bold");
+    	 var rangeForCalc = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x)+firstRowOfUserData+":"+columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x)+(row-1);
+         yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold");
          
        }
        row++;
