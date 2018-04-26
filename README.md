@@ -10,7 +10,13 @@ You have several options for configuration of this process. This include:
 * **Weighting** of every Skill
 * **Rating Points** - Min and Max points students can use for Rating
 
-![Sheet generation process of Peer-Grading Tool](images/2018/04/Peer-Grading-sheet_generation_process.gif)
+## Sheet generation process
+
+![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
+
+## Grading process
+
+![Grading process of Peer-Grading Tool](images/grading-process-of-peer-grading-tool.gif)
 
 # Why do I need this plugin
 
