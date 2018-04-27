@@ -22,6 +22,8 @@
 
 // #### Todo ####
 // TODO: settings['colLastGrade'] fertig machen
+// TODO: remove switch from getDocumentProperties()
+// TODO: remove bedingte Formatierung from whole sheet before setting it if something has changed (newDataValidation())
 
 var version = 0.51; 
 var settings = new Object();
@@ -36,8 +38,10 @@ settings['noten'] = false;
 settings['nameVorlage'] = "Template";
 settings['deletionMarker'] = "*"; 
 settings['sheetAuswertungName'] = "Evaluation"; 
-settings['maxPointsText'] = "Max Points";
+settings['maxPointsText'] = "Points per Skill";
 settings['endRatingText'] = "Rating (max. 2)";
+settings['ratedPersonText'] = "Rated Student";
+settings['averageRatingText'] = "Average";
 
 var documentProperties = PropertiesService.getDocumentProperties();
 
@@ -61,10 +65,14 @@ function getDocumentProperties(){
                     case 'colFirstGrade':
                     case 'colLastGrade':
                     case 'spalteUsernamen':
+                    case 'ratedPersonText':
+                    case 'averageRatingText':
 	    				property = property;
 	    				break;
 	    			default:
-	    				property = parseFloat(property);
+                        // todo: remove switch case if following is ok
+                        property = property;
+	    				//property = parseFloat(property);
 	    				break;
 	    		} 
 	    		settings[k]=property;
@@ -226,7 +234,10 @@ function generateSheets(){
  
   // Get User Array
   var users = generateUsernameArr();
-  //### Validation that data in Range of allowed points
+  
+  /**
+    * Validation that data in Range of allowed points
+    */
   var vorlageSheetGradeRange = vorlageSheet.getRange(settings['rowFirstData'],letterToColumn(settings['colFirstGrade']),users.length,vorlageSheetRange.getLastColumn()-letterToColumn(settings['colFirstGrade']));
   var rule = SpreadsheetApp.newDataValidation().requireNumberBetween(parseFloat(settings['punkteMin']), parseFloat(settings['punkteMax'])).setAllowInvalid(false).build();
   vorlageSheetGradeRange.setDataValidation(rule);
@@ -394,7 +405,7 @@ function auswertung() {
   
   var row = 1;
   
-  yourNewSheet.getRange(row, 1).setValue("Rated Person");
+  yourNewSheet.getRange(row, 1).setValue(settings['ratedPersonText']);
   
   row++;
   
@@ -519,7 +530,7 @@ function auswertung() {
          }
        }
        // Calc mean values
-       yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue("Average").setFontWeight("bold");
+       yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['averageRatingText']).setFontWeight("bold");
        for (var x = 0; x < competences.length; x++) {
 //         var sum = 0;
 //         var count = 0;
