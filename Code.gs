@@ -42,6 +42,7 @@ settings['maxPointsText'] = "Points per Skill";
 settings['endRatingText'] = "Rating (max. 2)";
 settings['ratedPersonText'] = "Rated Student";
 settings['averageRatingText'] = "Average";
+settings['competencesText'] = "Competences";
 
 var documentProperties = PropertiesService.getDocumentProperties();
 
@@ -434,10 +435,19 @@ function auswertung() {
          competences[j]= new Array(sheetData.length);
        }
        Logger.log("competences.length: "+competences.length);
-       var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
-       weightingHeader.setValue(settings['maxPointsText']).setFontWeight("bold");
+       
+       var competencesHeader = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
+       var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);       
+       competencesHeader.setValue(settings['maxPointsText']).setFontWeight("bold").setBackground(skillNameRange.getBackground());
+       weightingHeader.setValue(settings['competencesText']).setFontWeight("bold").setBackground(skillWeightRange.getBackground());
+       
+       // Draw heading borders
+       yourNewSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+row+":"+settings['colLastGrade']+row).setBorder(true, true, true, true, false, false);
+       yourNewSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+(row+1)+":"+settings['colLastGrade']+(row+1)).setBorder(true, true, true, true, false, false);
+       
        // Walk through headings
-       for (var k = 0; k < sheetData[0].length - (letterToColumn(settings['colFirstGrade'])); k++) {    
+       var numCols = sheetData[0].length - (letterToColumn(settings['colFirstGrade']));
+       for (var k = 0; k < numCols; k++) {    
     	 //Logger.log("sheetData: "+(settings['rowFirstData']-3)+"; "+(letterToColumn(settings['colFirstGrade'])-1+k));
     	 var heading = sheetData[settings['rowFirstData']-3][letterToColumn(settings['colFirstGrade'])-1+k];
     	 var weighting = sheetData[settings['rowFirstData']-2][letterToColumn(settings['colFirstGrade'])-1+k];
@@ -521,9 +531,9 @@ function auswertung() {
                  }
                  
                  /* Set Border if not last col */                 
-                 else{
-                   cell.setBorder(true, true, true, true, true, true);
-                 }
+                 //else{
+                 //  cell.setBorder(true, true, true, true, true, true);
+                 //}
                }               
              }  
            }         
@@ -532,6 +542,8 @@ function auswertung() {
            counterUsers++;
          }
        }
+       //draw border around ratings
+       yourNewSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+(row-counterUsers)+":"+settings['colLastGrade']+(row-1)).setBorder(true, true, true, true, false, false);
        // Calc mean values
        yourNewSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['averageRatingText']).setFontWeight("bold");
        for (var x = 0; x < competences.length; x++) {

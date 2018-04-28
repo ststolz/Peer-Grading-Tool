@@ -73,9 +73,14 @@
 		<td><input type="text" id="ratedPersonText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
     <tr>
-		<td>Name Rating per Skill</td>
+		<td>Name Competences</td>
+		<td><input type="text" id="competencesText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+    <tr>
+		<td>Name Rating per Competence</td>
 		<td><input type="text" id="averageRatingText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
+    
 	<tr>
 		<td></td>
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
@@ -102,6 +107,7 @@ function setSettings(settings){
       document.getElementById("maxPointsText").value = settings['maxPointsText']; 
       document.getElementById("endRatingText").value = settings['endRatingText']; 
       document.getElementById("ratedPersonText").value = settings['ratedPersonText']; 
+      document.getElementById("competencesText").value = settings['competencesText']; 
       document.getElementById("averageRatingText").value = settings['averageRatingText']; 
 }
 function getSettings() {
@@ -124,6 +130,7 @@ function saveSettings() {
         saveSettings['maxPointsText'] = document.getElementById("maxPointsText").value;
         saveSettings['endRatingText'] = document.getElementById("endRatingText").value;
         saveSettings['ratedPersonText'] = document.getElementById("ratedPersonText").value;
+        saveSettings['competencesText'] = document.getElementById("competencesText").value;
         saveSettings['averageRatingText'] = document.getElementById("averageRatingText").value;
         google.script.run.saveDocumentProperties(saveSettings);
         document.getElementById("saveButton").disabled = true;
