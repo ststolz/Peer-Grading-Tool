@@ -405,7 +405,7 @@ function auswertung() {
   
   var row = 1;
   
-  yourNewSheet.getRange(row, 1).setValue(settings['ratedPersonText']);
+  yourNewSheet.getRange(row, 1).setValue(settings['ratedPersonText']).setFontWeight("bold");
   
   row++;
   
@@ -417,12 +417,15 @@ function auswertung() {
      Logger.log('Bewerteter: ' + bewerteter);
      if(bewerteter != settings['sheetAuswertungName'] && bewerteter.indexOf(settings['deletionMarker']) != 0 && bewerteter != settings['nameVorlage'] ){
     	 
-       yourNewSheet.getRange(row, 1).setValue(bewerteter).setFontWeight("bold");
+       yourNewSheet.getRange(row, 1).setValue(bewerteter);
        row++;
        
        // ### Headings ###
        // sheetData row in first dimension, col in second
        var sheetData = spreadsheets[i].getDataRange().getValues();
+       var skillNameRange = spreadsheets[i].getRange(settings['colFirstGrade']+(settings['rowFirstData']-2)+":"+settings['colLastGrade']+(settings['rowFirstData']-2));
+       var skillWeightRange = spreadsheets[i].getRange(settings['colFirstGrade']+(settings['rowFirstData']-1)+":"+settings['colLastGrade']+(settings['rowFirstData']-1));
+       var userNameCol = spreadsheets[i].getRange(settings['spalteUsernamen']+settings['rowFirstData']);
        var sheetName = spreadsheets[i].getName();
        // Create Array for later mean calculation
        var competences = new Array(sheetData[0].length - (letterToColumn(settings['colFirstGrade'])-1));
@@ -432,7 +435,7 @@ function auswertung() {
        }
        Logger.log("competences.length: "+competences.length);
        var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
-       weightingHeader.setValue(settings['maxPointsText']);
+       weightingHeader.setValue(settings['maxPointsText']).setFontWeight("bold");
        // Walk through headings
        for (var k = 0; k < sheetData[0].length - (letterToColumn(settings['colFirstGrade'])); k++) {    
     	 //Logger.log("sheetData: "+(settings['rowFirstData']-3)+"; "+(letterToColumn(settings['colFirstGrade'])-1+k));
@@ -441,17 +444,17 @@ function auswertung() {
     	 
     	 //Logger.log('Heading: ' + (letterToColumn(settings['colFirstGrade'])+k));
          var headingCell = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+k);
-         headingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-2));
+         headingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-2)).setBackground(skillNameRange.getBackground());
          
          var weightingCell = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))+k);
     	 //var headingCell = yourNewSheet.getRange(row, 5);
          //headingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+k)+settings['rowFirstData']-3);
-         weightingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-1)+"*"+settings['punkteMax']);
+         weightingCell.setValue("='"+sheetName+"'!"+columnToLetter(letterToColumn(settings['colFirstGrade'])-1+1+k)+(settings['rowFirstData']-1)+"*"+settings['punkteMax']).setBackground(skillWeightRange.getBackground());
          //headingCell.setFontWeight("bold");
        }
        // Set Text for endrating
        var resultsHeader = yourNewSheet.getRange(row+1, sheetData[0].length);
-       resultsHeader.setValue(settings['endRatingText']);
+       resultsHeader.setValue(settings['endRatingText']).setFontWeight("bold");
        // Two times for Headers and Weightings
        row++;row++;
        
@@ -466,7 +469,7 @@ function auswertung() {
          
          if(bewerter != settings['sheetAuswertungName'] && bewerter != bewerteter && sheet.getName().indexOf(settings['deletionMarker']) != 0 && settings['nameVorlage'] != sheet.getName()){
            
-           yourNewSheet.getRange(row, 2).setValue(bewerter);
+           yourNewSheet.getRange(row, 2).setValue(bewerter).setBackground(userNameCol.getBackground());
            
            var sheetData = sheet.getDataRange().getValues();           
            
