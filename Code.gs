@@ -438,8 +438,8 @@ function auswertung() {
        
        var competencesHeader = yourNewSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
        var weightingHeader = yourNewSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);       
-       competencesHeader.setValue(settings['maxPointsText']).setFontWeight("bold").setBackground(skillNameRange.getBackground());
-       weightingHeader.setValue(settings['competencesText']).setFontWeight("bold").setBackground(skillWeightRange.getBackground());
+       competencesHeader.setValue(settings['competencesText']).setFontWeight("bold").setBackground(skillNameRange.getBackground());
+       weightingHeader.setValue(settings['maxPointsText']).setFontWeight("bold").setBackground(skillWeightRange.getBackground());
        
        // Draw heading borders
        yourNewSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+row+":"+settings['colLastGrade']+row).setBorder(true, true, true, true, false, false);
