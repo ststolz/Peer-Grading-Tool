@@ -1,10 +1,15 @@
 <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <style>
 	td {padding-right: 5px;}
 </style>
+
+<div ng-app="">
+
 <form>
-<table style="padding-left: 5px;"> 
+
 <h3>Sheet settings</h3>
+<table style="padding-left: 5px;"> 
 	<tr>
 		<td>Row first grade</td>
 		<td><input type="text" id="rowFirstData" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -26,8 +31,11 @@
 	</tr>
 	
 	</table>
-	<h3>Ratings</h3>
-	<table style="padding-left: 5px;"> 
+<h3>Ratings 
+  <button ng-click="showRatings=true" ng-hide="showRatings">Expand</button> 
+  <button ng-click="showRatings=false" ng-show="showRatings">Hide</button> 
+</h3>
+	<table style="padding-left: 5px;" ng-show="showRatings"> 
 	<tr>
 		<td>Minimum points</td>
 		<td><input type="text" id="punkteMin" style="width: 40px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -46,8 +54,11 @@
 		</td>
 	</tr> -->
 	</table>
-	<h3>Additional settings</h3>
-	<table style="padding-left: 5px;"> 
+<h3>Additional settings 
+  <button ng-click="showAdditional=true" ng-hide="showAdditional">Expand</button> 
+  <button ng-click="showAdditional=false" ng-show="showAdditional">Hide</button> 
+</h3>
+<table style="padding-left: 5px;" ng-show="showAdditional"> 
 	<tr>
 		<td>Name Template</td>
 		<td><input type="text" id="nameVorlage" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -80,16 +91,18 @@
 		<td>Name Rating per Competence</td>
 		<td><input type="text" id="averageRatingText" style="width: 60px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
+ </table>
     
+<table style="padding-left: 5px;"> 
 	<tr>
-		<td></td>
+		<td><button type="button" onClick="generateSheets()" id="shettGenButton" class="create">Run Sheet Generation</button></td>
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
 	</tr>	
-	<tr>
-		<td colspan="2"><button type="button" onClick="generateSheets()" id="shettGenButton" class="create">Run Sheet Generation</button></td>
-	</tr>
 </table>
 </form>
+ 
+  
+</div>    
 <div id='result'></div>
 <script>
 getSettings();
@@ -167,7 +180,7 @@ function onSuccess() {
   }
 function onFailure(error) {
     var div = document.getElementById('result');
-    div.innerHTML = '<div>Fail! '+error.message+'</div>';
+    div.innerHTML = '<div>'+error.message+'</div>';
   }
 function clickAction(){
     
