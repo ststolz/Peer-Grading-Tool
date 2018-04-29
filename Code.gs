@@ -173,13 +173,21 @@ function compareUsers(userArr){
   
 }
 
+function sheetFromTemplate(templateID, sheetName){
+  var sheet = SpreadsheetApp.openById(templateID).getSheetByName(sheetName);
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var templateCopy = sheet.copyTo(activeSpreadsheet);
+  activeSpreadsheet.insertSheet(sheetName, 2, {template: templateCopy}); 
+  activeSpreadsheet.deleteSheet(templateCopy);
+  return;
+}
 
 function generateSheets(){    
   
   Logger.log("Generate Sheets");
   Logger.log("sheetAuswertungName: "+settings['sheetAuswertungName']);
 	
-  if(!isOwner()) return;  
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
   
   var isFirstRun = true;
   
@@ -206,11 +214,10 @@ function generateSheets(){
   // ### Search for Vorlage ###
   var vorlageSheet = searchSheet(settings['nameVorlage']);
   if( ! vorlageSheet){
-    Browser.msgBox('Fehler! Kein Sheet mit dem Namen '+settings['nameVorlage']+' gefunden. Breche ab...');
-    return;
-  }
-  
-  
+    Browser.msgBox('No Sheet with name '+settings['nameVorlage']+' found. I am loading an example Template. Please adapt this and start again.');
+    sheetFromTemplate("1NjQnLFDq6FQ4eXUt9lQOfMj8OD_jQB169i9JbPAcH08", settings['nameVorlage']);
+    throw new Error("Stopping execution - no template found!");
+  }  
   
   var vorlageSheetRange = vorlageSheet.getDataRange();
   
@@ -370,7 +377,7 @@ function generateSheets(){
 
 function auswertung() {
   
-  if(!isOwner()) return;    
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
       
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var spreadsheets=activeSpreadsheet.getSheets();
