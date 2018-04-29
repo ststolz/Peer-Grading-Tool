@@ -28,6 +28,61 @@ Provided you - the teacher - have a list of Gmail Addresses of your students, yo
 2. For every sheet only the owner of this sheet has the permissions to edit. The edit permissions are restricted to the desired area so that there is no chance to damage something.
 3. An evaluation sheet is automatically created, where every student is listed with all ratings and the average of all ratings is automatically calculated.
 
+# Installation
+
+## Basic stuff you only have to do onces
+
+### Get a Google Account
+
+If you really have no Google Account go on reading. Most people have a Google Account. It is used for Android App Store (Google Play), Android Sync, Gmail, Google Search, Google Drive and many more. If you already have one, it is a good idea to reuse it to avoid confusion.
+
+If you have no Account at all, go to https://accounts.google.com and register (click "Create Account"). If you have logged in, you can go on.
+
+## Getting it running
+
+### Create a new Google Spreadsheet
+
+Go to https://drive.google.com and open the folder you want to add the spreadsheet to. Then click "New" - "Google Sheets". There click on "Add-ons" - "Get add-ons". Search now for "Peer-Grading Tool" and install it.
+
+You have to apply for some permissions.
+
+If you have your own template, just copy it and go on.
+
+### Loading Sidebar
+
+Click "Show Sidebar" in the appearing Menu for Peer-Grading Tool.
+
+### Loading template
+
+If you have no existing template, run the script ones, by scrolling down in the sidebar and clicking "Run Sheet Generation". The script will load a template and stop execution.
+
+### Fill in Students
+
+Now you can fill in the Gmail Adresses of the user which should rate each other. The Gmail accounts are needed, so that every student can only edit his document. You will find it helpful if students use Gmail Adresses with their names. If you need more Rows, just add the additional Gmail addresses in the same col.
+
+### Fill in Competences and Weightings
+
+Just Replace the Competences in the Template with the Competences you want to have. Under each Competence you can type in an multiplicator to make the impact of the competence higher.
+
+If you need more competences, add additional columns. But be sure, to adopt "Col last competence" in the sidebar.
+
+### Make the sheet ready for Peer Grading process
+
+Now you only have to click "Run Sheet Generation". This will generate a sheet for every student.
+
+### Share the sheet with your Students
+
+Copy the link in the browser or click "Share" and get the link there. You don't have to change permissions. All is done by the script! Send the link per E-Mail, Google Classroom or similar to your students.
+
+The students have to be logged in with the accounts you filled in the template. If they do so, they can edit the sheet with their name. They are only allowed to set points in the range you set in the sidebar.
+
+# Tipps
+
+1. Force your students to think about their rating. For example you could want them to gife a comment for every rating which is beeter that the standard rating.
+
+# Permissions
+
+Read here why the script needs which permission. The script will collect no user data!
 
 # License
     Peer-Grading Tool for Google Spreadsheets
