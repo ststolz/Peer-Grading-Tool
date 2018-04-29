@@ -10,12 +10,6 @@ You have several options for configuration of this process. This include:
 * **Weighting** of every Skill
 * **Rating Points** - Min and Max points students can use for Rating
 
-## Sheet generation process
-
-![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
-
-## Grading process
-
 ![Grading process of Peer-Grading Tool](images/grading-process-of-peer-grading-tool.gif)
 
 # Why do I need this plugin
@@ -38,7 +32,9 @@ If you really have no Google Account go on reading. Most people have a Google Ac
 
 If you have no Account at all, go to https://accounts.google.com and register (click "Create Account"). If you have logged in, you can go on.
 
-## Getting it running
+## Getting it up and running
+
+![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
 
 ### Create a new Google Spreadsheet
 
