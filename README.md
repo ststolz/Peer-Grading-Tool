@@ -12,6 +12,8 @@ You have several options for configuration of this process. This include:
 
 ## Sheet generation process
 
+This is only for a fast overview. For learning how to use this tool, refer to section _Installation_.
+
 ![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
 
 ## Grading process
