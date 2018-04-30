@@ -54,13 +54,13 @@ If you have no existing template, run the script ones, by scrolling down in the 
 
 ### Fill in Students
 
-Now you can fill in the Gmail Adresses of the user which should rate each other. The Gmail accounts are needed, so that every student can only edit his document. You will find it helpful if students use Gmail Adresses with their names. If you need more Rows, just add the additional Gmail addresses in the same col.
+Now you can fill in the Gmail Adresses of the user which should rate each other. The Gmail accounts are needed, so that every student can only edit his or her document. You will find it helpful if students use Gmail Adresses with their names. If you need more rows, just add the additional Gmail addresses in the same col.
 
 ### Fill in Competences and Weightings
 
-Just Replace the Competences in the Template with the Competences you want to have. Under each Competence you can type in an multiplicator to make the impact of the competence higher.
+Just replace the competences in the Template with the competences you want to have. Under each competence you can type in an multiplicator to make the impact of the competence higher.
 
-If you need more competences, add additional columns. But be sure, to adopt "Col last competence" in the sidebar.
+If you need more competences, add additional columns. But be sure to adopt "Col last competence" in the sidebar.
 
 ### Make the sheet ready for Peer Grading process
 
@@ -68,17 +68,17 @@ Now you only have to click "Run Sheet Generation". This will generate a sheet fo
 
 ### Share the sheet with your Students
 
-Copy the link in the browser or click "Share" and get the link there. You don't have to change permissions. All is done by the script! Send the link per E-Mail, Google Classroom or similar to your students.
+Copy the link in the browser or click "Share" and get the link there. You don't have to change permissions. All is done by the script! Send the link per e-mail, Google Classroom or similar to your students.
 
-The students have to be logged in with the accounts you filled in the template. If they do so, they can edit the sheet with their name. They are only allowed to set points in the range you set in the sidebar.
+The students have to be logged in with the accounts which you filled in in the template-sheet. If they do so, they can edit the sheet with their username. They are only allowed to set points in the range which you defined in the sidebar.
 
 # Tipps
 
-1. Force your students to think about their rating. For example you could want them to gife a comment for every rating which is beeter that the standard rating.
+1. Force your students to think about their rating. For example you could want them to give a comment for every rating which is better than the standard rating.
 
 # Permissions
 
-Read here why the script needs which permission. The script will collect no user data!
+Read here why the script needs following permissions. We will not collect user data!
 
 # License
     Peer-Grading Tool for Google Spreadsheets
