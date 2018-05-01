@@ -29,11 +29,11 @@ var version = 0.51;
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = "C";
-settings['colLastGrade'] = "H";
+settings['colLastGrade'] = "G";
 settings['spalteUsernamen'] = "B";
-settings['rowFirstData'] = 4; 
-settings['punkteMin'] = 0;
-settings['punkteMax'] = 2;
+settings['rowFirstData'] = "4"; 
+settings['punkteMin'] = "0";
+settings['punkteMax'] = "2";
 settings['noten'] = false;
 settings['nameVorlage'] = "Template";
 settings['deletionMarker'] = "*"; 
@@ -177,8 +177,9 @@ function sheetFromTemplate(templateID, sheetName){
   var sheet = SpreadsheetApp.openById(templateID).getSheetByName(sheetName);
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var templateCopy = sheet.copyTo(activeSpreadsheet);
-  activeSpreadsheet.insertSheet(sheetName, 2, {template: templateCopy}); 
+  insertedTemplate = activeSpreadsheet.insertSheet(sheetName, 2, {template: templateCopy}); 
   activeSpreadsheet.deleteSheet(templateCopy);
+  insertedTemplate.deleteRow(1);
   return;
 }
 
