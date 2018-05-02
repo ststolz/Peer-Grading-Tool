@@ -11,6 +11,9 @@ You have several options for configuration of this process. This include:
 * **Rating Points** - Min and Max points students can use for Rating
 
 ![Grading process of Peer-Grading Tool](images/grading-process-of-peer-grading-tool.gif)
+--
+_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**_.
+
 
 # Why do I need this plugin
 
@@ -34,9 +37,9 @@ If you have no Account at all, go to https://accounts.google.com and register (c
 
 ## Getting it up and running
 
-This is only for a fast overview. For learning how to use this tool, refer to section _Installation_.
-
 ![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
+--
+_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**_.
 
 ### Create a new Google Spreadsheet
 
