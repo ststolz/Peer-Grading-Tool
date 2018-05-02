@@ -17,7 +17,7 @@ _The intention of this animation is a fast overview. For learning how to use thi
 
 # Why do I need this plugin
 
-Teachers should give students the chance to assess work of others. This is an important part of the reflection process. In usual class sizes this is hardly possible because of time limitations. This is where *Peer-Grading Tool* comes into play and helps making it possible.
+Teachers should give students the chance to assess work of others. This offers an additional way of learning and reflection process. Also studies show that it can yield gains in the cognitive, social, affective and transferable skill. ([Topping, 1998][topping_1998])  In usual class sizes this is hardly possible because of time limitations. This is where *Peer-Grading Tool* comes into play and helps making it possible.
 
 Provided you - the teacher - have a list of Gmail Addresses of your students, you are one klick away to automate this process:
 
@@ -101,3 +101,7 @@ Read here why the script needs following permissions. We will not collect user d
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Literature
+
+[topping_1998]: Topping, K., 1998. Peer assessment between students in colleges and universities. Review of educational Research 68, 249–276.
