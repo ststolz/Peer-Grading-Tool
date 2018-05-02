@@ -12,14 +12,14 @@ You have several options for configuration of this process. This include:
 
 ![Grading process of Peer-Grading Tool](images/grading-process-of-peer-grading-tool.gif)
 --
-_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**_.
+_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**. The email addresses used (datster1@, ...), are placeholders for your students addresses._
 
 
 # Why do I need this plugin
 
 Teachers should give students the chance to assess work of others. This offers an additional way of learning and reflection process. Also studies show that it can yield gains in the cognitive, social, affective and transferable skill (Topping, 1998]). In usual class sizes this is hardly possible because of time limitations. This is where *Peer-Grading Tool* comes into play and helps making it possible.
 
-The process can involve grading and feedback. This tool is focused on making the grading process more efficient. But it can also be used to give peer feedback in addition to grades. 
+The process can involve grading and feedback. This tool is focused on making the grading process more efficient. But it can also be used to give peer feedback in addition to grades.
 
 Provided you - the teacher - have a list of Gmail Addresses of your students, you are one klick away to automate this process:
 
@@ -41,7 +41,7 @@ If you have no Account at all, go to https://accounts.google.com and register (c
 
 ![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
 --
-_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**_.
+_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**. The email addresses used (datster1@, ...), are placeholders for your students addresses._
 
 ### Create a new Google Spreadsheet
 
@@ -87,6 +87,10 @@ The students have to be logged in with the accounts which you filled in in the t
 
 Read here why the script needs following permissions. We will not collect user data!
 
+# Literature
+
+Topping, K., 1998. Peer assessment between students in colleges and universities. Review of educational Research 68, 249–276.
+
 # License
     Peer-Grading Tool for Google Spreadsheets
     Copyright (C) 2018  Stefan Stolz and Nina Margreiter
@@ -103,7 +107,3 @@ Read here why the script needs following permissions. We will not collect user d
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-# Literature
-
-Topping, K., 1998. Peer assessment between students in colleges and universities. Review of educational Research 68, 249–276.
