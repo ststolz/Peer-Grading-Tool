@@ -20,7 +20,7 @@
 // TODO: settings['colLastGrade'] fertig machen
 // TODO: remove bedingte Formatierung from whole sheet before setting it if something has changed (newDataValidation())
 
-var version = 0.51; 
+var version = 0.52; 
 var settings = new Object();
 settings['version'] = version;
 settings['colFirstGrade'] = "C";
@@ -185,7 +185,7 @@ function generateSheets(){
   var vorlageSheetRange = vorlageSheet.getDataRange();
     
   // ### Protect Vorlage ###
-  var protection = vorlageSheet.protect().setDescription('Sheet Protection');  
+  var protection = vorlageSheet.protect().setDescription('Template Protection');  
   var me = Session.getEffectiveUser();   
   protection.addEditor(me);
   protection.removeEditors(protection.getEditors());
@@ -343,8 +343,7 @@ function auswertung() {
     yourNewSheet.setName(settings['sheetAuswertungName']);
   
   // ### Sheet Protection ###
-  var protection = yourNewSheet.protect().setDescription('Eval Protection');
-  
+  var protection = yourNewSheet.protect().setDescription('Eval Protection');  
   var me = Session.getEffectiveUser();
   
   protection.addEditor(me);
