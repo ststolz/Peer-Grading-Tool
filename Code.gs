@@ -88,11 +88,18 @@ function onOpen() {
   .addToUi();
   
 }
+
+function showAnchor(title,name,url) {
+  var html = '<html><body><a href="'+url+'" target="blank" onclick="google.script.host.close()">'+name+'</a></body></html>';
+  var ui = HtmlService.createHtmlOutput(html)
+  SpreadsheetApp.getUi().showModelessDialog(ui,title);
+}
   
 function showManual(){
-	var html = HtmlService.createHtmlOutputFromFile('help');
-	  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
-	      .showModalDialog(html, 'Manual'); 
+	//var html = HtmlService.createHtmlOutputFromFile('help');
+	//  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
+	//      .showModalDialog(html, 'Manual'); 
+    showAnchor('Manual','Link to Peer-Grading Tool Manual','https://gitlab.com/st.stolz/Peer-Grading-Tool');
 }
 
 function getSettings(){
@@ -112,7 +119,7 @@ function showSidebar() {
 }
 
 function disclaimer(){
-  Browser.msgBox('Version '+version+' des Feedback Tools erstellt von MARG und STOL (HAK Imst)');
+  Browser.msgBox('Version '+version+' of Peer-Grading Tool. See manual for license.');
 }
 
 function calcMean(){
