@@ -93,17 +93,28 @@
 	</tr>
  </table>
     
-<table style="padding-left: 5px;"> 
-	<tr>
-		<td><button type="button" onClick="generateSheets()" id="shettGenButton" class="create">Generate Sheets</button></td>
+<table style="padding-left: 5px;">
+    <tr>
+    <td></td>
+    <td></td>
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
-	</tr>	
+		
+	</tr>
+    
+    <tr>
+		<td>Generate</td>
+        <td><button type="button" onClick="generateSheets()" id="sheetGenButton" class="create">Users</button></td>
+        <td><button type="button" onClick="generateEvaluationSheet()" id="evalGenButton" class="create">Evaluation</button></td>
+	</tr>
+    
 </table>
 </form>
  
   
 </div>    
-<div id='result'></div>
+
+<div id='result' class='block gray'></div>
+
 <script>
 getSettings();
 function setSettings(settings){
@@ -123,9 +134,11 @@ function setSettings(settings){
       document.getElementById("competencesText").value = settings['competencesText']; 
       document.getElementById("averageRatingText").value = settings['averageRatingText']; 
 }
-function getSettings() {
-	
-        google.script.run.withSuccessHandler(setSettings).getSettings();
+function getSettings() {	
+        google.script.run
+        .withSuccessHandler(setSettings)
+        .withFailureHandler(onFailure)
+        .getSettings();
 }
       
 function saveSettings() {
@@ -147,28 +160,32 @@ function saveSettings() {
         saveSettings['averageRatingText'] = document.getElementById("averageRatingText").value;
         google.script.run.saveDocumentProperties(saveSettings);
         document.getElementById("saveButton").disabled = true;
-        document.getElementById("shettGenButton").disabled = false;
+        document.getElementById("sheetGenButton").disabled = false;
+        document.getElementById("evalGenButton").disabled = false;
 }
 function onSettingsChange(){
 	document.getElementById("saveButton").disabled = false;
-	document.getElementById("shettGenButton").disabled = true;
-	
+	document.getElementById("sheetGenButton").disabled = true;
+    document.getElementById("evalGenButton").disabled = true;
 	
 }
-function auswertung() {
+
+function runningFeedback(){
+    var div = document.getElementById('result');
+    div.innerHTML = '<div>Running...<br><img src="https://lh3.googleusercontent.com/EBdoICM79nLvDyKJmCLtgnfdBIJbQyCxZlTupaA-bEdx5vGK9_C8XOoBswkupLwFvqMyhV7ldrJGI1vZU9jBaFxj7QmJWUc_NKx3P_iH6bLAYHsn_HrchBrP915CYX1Y5UUtxO2afFMUC5aCNN0LdXgC51VPg2zVEvsBwqYNoNDO6orW4OMa4rl38GVYHpgxFZ2qYFt5ZFdr_GkW6RovGbwYM1dC5ynZLnufB2rblHmR7KNybmfuAaP-bxBL5I6v05RDnDhL3yv5Hxge_sQgq3G-xyAvp2UYvdCJl5PuJMMQ95OinWy1QwiOWrRdu58pihAhJcdCGZhZDYhDc4XM0MnKVad-OK0SgK8Tgbhr75BTiAOmKFXCuhk0qbMmILu5Xhd8nWiQsgMq2Z_Fx32JxaQLszpxTC27-2-UVJLzr8sqljeEMyNo8j2vSi0q5H3G2izriMOmZRbCymYF-nMdHBv63gRkrlFRuenJFA18kVhbrBVfhMNcrixsJZXLe4qKC2crElvr9BFSgi9x_QUFwiMVhRFbmY0hEGQg9JQbS-BAzpPKi3sw19WNaQ1DJBdQz76PMBdc3_WFehcqKqHBtU8arp4BsVZYDRai64QXGbo55eAjng=s96-no"></div>';
     
 }
+
 function generateSheets() {
-	var div = document.getElementById('result');
-    div.innerHTML = '<div> Running...<br><img src="https://lh3.googleusercontent.com/EBdoICM79nLvDyKJmCLtgnfdBIJbQyCxZlTupaA-bEdx5vGK9_C8XOoBswkupLwFvqMyhV7ldrJGI1vZU9jBaFxj7QmJWUc_NKx3P_iH6bLAYHsn_HrchBrP915CYX1Y5UUtxO2afFMUC5aCNN0LdXgC51VPg2zVEvsBwqYNoNDO6orW4OMa4rl38GVYHpgxFZ2qYFt5ZFdr_GkW6RovGbwYM1dC5ynZLnufB2rblHmR7KNybmfuAaP-bxBL5I6v05RDnDhL3yv5Hxge_sQgq3G-xyAvp2UYvdCJl5PuJMMQ95OinWy1QwiOWrRdu58pihAhJcdCGZhZDYhDc4XM0MnKVad-OK0SgK8Tgbhr75BTiAOmKFXCuhk0qbMmILu5Xhd8nWiQsgMq2Z_Fx32JxaQLszpxTC27-2-UVJLzr8sqljeEMyNo8j2vSi0q5H3G2izriMOmZRbCymYF-nMdHBv63gRkrlFRuenJFA18kVhbrBVfhMNcrixsJZXLe4qKC2crElvr9BFSgi9x_QUFwiMVhRFbmY0hEGQg9JQbS-BAzpPKi3sw19WNaQ1DJBdQz76PMBdc3_WFehcqKqHBtU8arp4BsVZYDRai64QXGbo55eAjng=s96-no"></div>';
-    google.script.run
-    .withSuccessHandler(onGenerateSheetsSuccess)
+    runningFeedback();
+	google.script.run
+    .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
-    .generateSheets();
-    
+    .generateSheets();    
     
 }
-function onGenerateSheetsSuccess() {
+function generateEvaluationSheet() {
+    runningFeedback();
 	google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
@@ -182,8 +199,7 @@ function onFailure(error) {
     var div = document.getElementById('result');
     div.innerHTML = '<div>'+error.message+'</div>';
   }
-function clickAction(){
-    
+function clickAction(){    
     google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
