@@ -342,6 +342,17 @@ function auswertung() {
     yourNewSheet = activeSpreadsheet.insertSheet();
     yourNewSheet.setName(settings['sheetAuswertungName']);
   
+  // ### Sheet Protection ###
+  var protection = yourNewSheet.protect().setDescription('Eval Protection');
+  
+  var me = Session.getEffectiveUser();
+  
+  protection.addEditor(me);
+  protection.removeEditors(protection.getEditors());
+  if (protection.canDomainEdit()) {
+    protection.setDomainEdit(false);
+  }
+  
   activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   spreadsheets=activeSpreadsheet.getSheets();
   
