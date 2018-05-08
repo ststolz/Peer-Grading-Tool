@@ -16,6 +16,7 @@
   */
 
 // #### Todo ####
+// TODO: Protect Evaluation Sheet
 // TODO: settings['colLastGrade'] fertig machen
 // TODO: remove bedingte Formatierung from whole sheet before setting it if something has changed (newDataValidation())
 
