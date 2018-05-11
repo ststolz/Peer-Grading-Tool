@@ -323,8 +323,9 @@ function generateSheets(){
 
 function auswertung() {
   
-  // Get User Array
+  // Get important Data
   var users = generateUsernameArr();
+  var nCompetences = (parseInt(letterToColumn(settings['colLastGrade'])) - parseInt(letterToColumn(settings['colFirstGrade'])))+1;
   
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
       
@@ -353,9 +354,7 @@ function auswertung() {
   }*/
   
   activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  spreadsheets=activeSpreadsheet.getSheets();
-  
-  
+  spreadsheets=activeSpreadsheet.getSheets();  
   
   var firstRowOfUserData;
   
@@ -390,8 +389,7 @@ function auswertung() {
       var sheetName = bewerteterSheet.getName();
       
       // go to row after existing data 
-      row += users.length + parseInt(settings['rowFirstData']);
-      
+      row += users.length + parseInt(settings['rowFirstData']);      
       
       /*
        * Create Array with competences
@@ -420,7 +418,7 @@ function auswertung() {
       
       var row_weighting = row+1;
       
-      for (var k = 0; k < numCols; k++) {
+      for (var k = 0; k < nCompetences; k++) {
         var heading = sheetData[settings['rowFirstData']-3][letterToColumn(settings['colFirstGrade'])-1+k];        
         var weighting = sheetData[settings['rowFirstData']-2][letterToColumn(settings['colFirstGrade'])-1+k];
         
@@ -434,19 +432,23 @@ function auswertung() {
         
       
       // Set Text for endrating
-      var resultsHeader = bewerteterSheet.getRange(row+1, sheetData[0].length);
+      Logger.log("#1: ");
+      var resultsHeader = bewerteterSheet.getRange(row+1, parseInt(letterToColumn(settings['colLastGrade']))+1);
+      Logger.log("#2");
       resultsHeader.setValue(settings['endRatingText']).setFontWeight("bold");
+      Logger.log("#3");
       
       var counterUsers = 0;
       
       // set first row for Evaluation      
       row++;row++;
       firstRowOfUserData = row;
+      Logger.log("#4");
       
       // Walk through sheets to get data for user
       for (var j = 0; j < spreadsheets.length; j++) {
         
-        
+        Logger.log("#5");
         
         var sheet = spreadsheets[j];
         var bewerter = sheet.getName();
@@ -465,6 +467,7 @@ function auswertung() {
           // Walk through reviews
           // Walk through lines
           Logger.log("users.length: "+users.length);
+          
           for (var k = 0; k < sheetData.length; k++) {
             Logger.log("k: "+k+"; users+fr: "+(users.length + parseInt(settings['rowFirstData'])));
             // If line is for reviewed person
@@ -473,7 +476,9 @@ function auswertung() {
               // calc number of cols with data
               var colsWithData = sheetData[k].length - (letterToColumn(settings['colFirstGrade'])-1);
               // Walk through all cols
-              for(var l = 0; l < colsWithData; l++){
+              
+              Logger.log("nCompetences: "+nCompetences);
+              for(var l = 0; l < nCompetences; l++){
                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                 
                 // Fill Array for later mean calc
