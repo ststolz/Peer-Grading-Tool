@@ -155,7 +155,7 @@ function sheetFromTemplate(templateID, sheetName){
   return;
 }
 
-function generateSheets(){    
+function generateSheets(update){    
   
   Logger.log("Generate Sheets");
   Logger.log("sheetAuswertungName: "+settings['sheetAuswertungName']);
@@ -224,8 +224,7 @@ function generateSheets(){
   // ### Walk through lines with Usernames ###
   for(var i = 0; i < users.length; i++){ 
     
-    var username = users[i];
-    
+    var username = users[i];    
     
     if(username == ""){ continue; }
     
@@ -236,7 +235,7 @@ function generateSheets(){
     // ### Check if Sheet is already existing ###
     if(!isFirstRun){
       newSheet = searchSheet(username);
-      if(newSheet){
+      if(newSheet && update){
         isExisting = true;
         var existingSheetData = newSheet.getDataRange().getValues();
         
@@ -251,7 +250,10 @@ function generateSheets(){
         		}  
         	}        	
         }
-      }        
+      } 
+      else if(newSheet) {
+        continue;
+      }
     }
     
     if(isFirstRun || ! isExisting){
