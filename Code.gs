@@ -323,8 +323,9 @@ function generateSheets(){
 
 function auswertung() {
   
-  // Get User Array
+  // Get important Data
   var users = generateUsernameArr();
+  var nCompetences = (parseInt(letterToColumn(settings['colLastGrade'])) - parseInt(letterToColumn(settings['colFirstGrade'])))+1;
   
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
       
@@ -353,9 +354,7 @@ function auswertung() {
   }*/
   
   activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  spreadsheets=activeSpreadsheet.getSheets();
-  
-  
+  spreadsheets=activeSpreadsheet.getSheets();  
   
   var firstRowOfUserData;
   
@@ -390,15 +389,14 @@ function auswertung() {
       var sheetName = bewerteterSheet.getName();
       
       // go to row after existing data 
-      row += users.length + parseInt(settings['rowFirstData']);
-      
+      row += users.length + parseInt(settings['rowFirstData']);      
       
       /*
        * Create Array with competences
-       */
-      var competences = new Array(sheetData[0].length - (letterToColumn(settings['colFirstGrade'])-1));
+       */      
+      var competences = new Array(nCompetences);
       
-      for (var j = 0; j < competences.length; j++) {
+      for (var j = 0; j < nCompetences; j++) {
         competences[j]= new Array(sheetData.length);
       }
       Logger.log("competences.length: "+competences.length);
@@ -420,7 +418,7 @@ function auswertung() {
       
       var row_weighting = row+1;
       
-      for (var k = 0; k < numCols; k++) {
+      for (var k = 0; k < nCompetences; k++) {
         var heading = sheetData[settings['rowFirstData']-3][letterToColumn(settings['colFirstGrade'])-1+k];        
         var weighting = sheetData[settings['rowFirstData']-2][letterToColumn(settings['colFirstGrade'])-1+k];
         
@@ -434,19 +432,23 @@ function auswertung() {
         
       
       // Set Text for endrating
-      var resultsHeader = bewerteterSheet.getRange(row+1, sheetData[0].length);
+      Logger.log("#1: ");
+      var resultsHeader = bewerteterSheet.getRange(row+1, parseInt(letterToColumn(settings['colLastGrade']))+1);
+      Logger.log("#2");
       resultsHeader.setValue(settings['endRatingText']).setFontWeight("bold");
+      Logger.log("#3");
       
       var counterUsers = 0;
       
       // set first row for Evaluation      
       row++;row++;
       firstRowOfUserData = row;
+      Logger.log("#4");
       
       // Walk through sheets to get data for user
       for (var j = 0; j < spreadsheets.length; j++) {
         
-        
+        Logger.log("#5");
         
         var sheet = spreadsheets[j];
         var bewerter = sheet.getName();
@@ -465,6 +467,7 @@ function auswertung() {
           // Walk through reviews
           // Walk through lines
           Logger.log("users.length: "+users.length);
+          
           for (var k = 0; k < sheetData.length; k++) {
             Logger.log("k: "+k+"; users+fr: "+(users.length + parseInt(settings['rowFirstData'])));
             // If line is for reviewed person
@@ -473,7 +476,9 @@ function auswertung() {
               // calc number of cols with data
               var colsWithData = sheetData[k].length - (letterToColumn(settings['colFirstGrade'])-1);
               // Walk through all cols
-              for(var l = 0; l < colsWithData; l++){
+              
+              Logger.log("nCompetences: "+nCompetences);
+              for(var l = 0; l < nCompetences+1; l++){
                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                 
                 // Fill Array for later mean calc
@@ -491,17 +496,15 @@ function auswertung() {
                 
                 /* Calc Row Mean if last col */
                 Logger.log("col: "+l+"; lastgrade: "+letterToColumn(settings['colLastGrade']));
-                if(l+letterToColumn(settings['colFirstGrade'])-1 == letterToColumn(settings['colLastGrade'])){               	 
+                if(l+letterToColumn(settings['colFirstGrade']) == letterToColumn(settings['colLastGrade'])+1){               	 
                   Logger.log("get it!");
-                  var firstColData = parseFloat(letterToColumn(settings['colFirstGrade']));
-                  var lastColData = parseFloat(letterToColumn(settings['colFirstGrade'])) + colsWithData -2;                	 
                   var rangeGrades = settings['colFirstGrade']+(row)+":"+settings['colLastGrade']+(row); 
                   var rangeWeights = settings['colFirstGrade']+(row_weighting)+":"+settings['colLastGrade']+(row_weighting);
                   
-                  var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+columnToLetter(firstColData)+(k+1)+":"+columnToLetter(lastColData)+(k+1)+";\"<>\")";
+                  var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+settings['colFirstGrade']+(k+1)+":"+settings['colLastGrade']+(k+1)+";\"<>\")";
                   bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
                   
-                }          
+                }
                 
                 
               }               
@@ -516,10 +519,11 @@ function auswertung() {
       bewerteterSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+(row-counterUsers)+":"+settings['colLastGrade']+(row-1)).setBorder(true, true, true, true, false, false);
       // Calc mean values
       bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['averageRatingText']).setFontWeight("bold");
-      for (var x = 0; x < competences.length; x++) {
+      for (var x = 0; x < nCompetences+1; x++) {
         var calcCol = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x);
         var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-1);
-        if(x == competences.length-1){
+        Logger.log("competences.length-1: "+competences.length+"; x: "+x);
+        if(x == nCompetences){
           bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold").setNumberFormat("#.###%");
         }
         else{
