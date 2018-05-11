@@ -100,11 +100,21 @@
 		<td><button type="button" onClick="saveSettings()" id="saveButton" disabled="true">Save</button></td>
 		
 	</tr>
-    
     <tr>
-		<td>Generate</td>
-        <td><button type="button" onClick="generateSheets()" id="sheetGenButton" class="create">Users</button></td>
-        <td><button type="button" onClick="generateEvaluationSheet()" id="evalGenButton" class="create">Evaluation</button></td>
+		<td colspan="3">Generate User Sheets</td>        
+    </tr>
+    <tr>		
+        <td><button type="button" onClick="generateSheets()" id="sheetGenButton" class="create">All Users</button></td>
+        <td></td>
+        <td></td>
+	</tr>
+    <tr>
+		<td colspan="3">Generate Evaluation Section</td>        
+    </tr>
+    <tr>
+		<td><button type="button" onClick="generateEvaluationSheet()" id="evalGenButton" class="create">All Users</button></td>
+        <td colspan="2"><button type="button" onClick="activeUserEvaluation()" id="activeUserEvaluationButton" class="create">Active User</button></td>
+        <td></td>
 	</tr>
     
 </table>
@@ -184,6 +194,14 @@ function generateSheets() {
     .generateSheets();    
     
 }
+function activeUserEvaluation(){
+    runningFeedback();
+	google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .evalActiveUser();    
+}
+
 function generateEvaluationSheet() {
     runningFeedback();
 	google.script.run
