@@ -105,8 +105,8 @@
 		<td colspan="3">Generate User Sheets</td>        
     </tr>
     <tr>		
-        <td><button type="button" onClick="generateSheets()" id="sheetGenButton" class="create">All Users</button></td>
-        <td></td>
+        <td><button type="button" onClick="generateSheets(false)" id="sheetGenButton" class="create">Create</button></td>
+        <td><button type="button" onClick="generateSheets(true)" id="sheetGenButton" class="create">Update</button></td>
         <td></td>
 	</tr>
     <tr>
@@ -189,12 +189,12 @@ function runningFeedback(){
     
 }
 
-function generateSheets() {
+function generateSheets(update) {
     runningFeedback();
 	google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
-    .generateSheets();    
+    .generateSheets(update);    
     
 }
 function activeUserEvaluation(){
