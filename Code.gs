@@ -481,18 +481,20 @@ function auswertung() {
               for(var l = 0; l < nCompetences+1; l++){
                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                 
-                // Fill Array for later mean calc
-                // Only if in range of points
-                if(isInPointsRange(val) && l < colsWithData -1){
-                  competences[l][counterUsers] = val;                                 
+                if(l<nCompetences){
+                  // Fill Array for later mean calc
+                  // Only if in range of points
+                  if(isInPointsRange(val) && l < colsWithData -1){
+                    competences[l][counterUsers] = val;                                 
+                  }
+                  else{
+                    var cell = bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("");
+                  }
+                  
+                  var columnGrade = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+l);
+                  /* set link to user rating value */
+                  var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                 }
-                else{
-                  var cell = bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("");
-                }
-                
-                var columnGrade = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+l);
-                /* set link to user rating value */
-                var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                 
                 /* Calc Row Mean if last col */
                 Logger.log("col: "+l+"; lastgrade: "+letterToColumn(settings['colLastGrade']));
