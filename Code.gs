@@ -393,10 +393,10 @@ function auswertung() {
       
       /*
        * Create Array with competences
-       */
-      var competences = new Array(sheetData[0].length - (letterToColumn(settings['colFirstGrade'])-1));
+       */      
+      var competences = new Array(nCompetences);
       
-      for (var j = 0; j < competences.length; j++) {
+      for (var j = 0; j < nCompetences; j++) {
         competences[j]= new Array(sheetData.length);
       }
       Logger.log("competences.length: "+competences.length);
@@ -478,7 +478,7 @@ function auswertung() {
               // Walk through all cols
               
               Logger.log("nCompetences: "+nCompetences);
-              for(var l = 0; l < nCompetences; l++){
+              for(var l = 0; l < nCompetences+1; l++){
                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                 
                 // Fill Array for later mean calc
@@ -496,17 +496,15 @@ function auswertung() {
                 
                 /* Calc Row Mean if last col */
                 Logger.log("col: "+l+"; lastgrade: "+letterToColumn(settings['colLastGrade']));
-                if(l+letterToColumn(settings['colFirstGrade'])-1 == letterToColumn(settings['colLastGrade'])){               	 
+                if(l+letterToColumn(settings['colFirstGrade']) == letterToColumn(settings['colLastGrade'])+1){               	 
                   Logger.log("get it!");
-                  var firstColData = parseFloat(letterToColumn(settings['colFirstGrade']));
-                  var lastColData = parseFloat(letterToColumn(settings['colFirstGrade'])) + colsWithData -2;                	 
                   var rangeGrades = settings['colFirstGrade']+(row)+":"+settings['colLastGrade']+(row); 
                   var rangeWeights = settings['colFirstGrade']+(row_weighting)+":"+settings['colLastGrade']+(row_weighting);
                   
-                  var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+columnToLetter(firstColData)+(k+1)+":"+columnToLetter(lastColData)+(k+1)+";\"<>\")";
+                  var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+settings['colFirstGrade']+(k+1)+":"+settings['colLastGrade']+(k+1)+";\"<>\")";
                   bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
                   
-                }          
+                }
                 
                 
               }               
@@ -521,10 +519,11 @@ function auswertung() {
       bewerteterSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+(row-counterUsers)+":"+settings['colLastGrade']+(row-1)).setBorder(true, true, true, true, false, false);
       // Calc mean values
       bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['averageRatingText']).setFontWeight("bold");
-      for (var x = 0; x < competences.length; x++) {
+      for (var x = 0; x < nCompetences+1; x++) {
         var calcCol = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x);
         var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-1);
-        if(x == competences.length-1){
+        Logger.log("competences.length-1: "+competences.length+"; x: "+x);
+        if(x == nCompetences){
           bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold").setNumberFormat("#.###%");
         }
         else{
