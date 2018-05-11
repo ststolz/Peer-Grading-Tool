@@ -323,60 +323,62 @@ function generateSheets(){
 
 function auswertung() {
   
-  // Get important Data
-  var users = generateUsernameArr();
-  var nCompetences = (parseInt(letterToColumn(settings['colLastGrade'])) - parseInt(letterToColumn(settings['colFirstGrade'])))+1;
-  
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+  
+  Browser.msgBox('Trying to make evaluation section for all users. If this exceeds maximum execution time, create the rest of the sheets per individual user.');
       
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var spreadsheets=activeSpreadsheet.getSheets();  
-  
-  // create new Sheet - if exists, delete first  
-    /*activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    var yourNewSheet = activeSpreadsheet.getSheetByName(settings['sheetAuswertungName']);
-
-    if (yourNewSheet != null) {
-        activeSpreadsheet.deleteSheet(yourNewSheet);
-    }
-
-    yourNewSheet = activeSpreadsheet.insertSheet();
-    yourNewSheet.setName(settings['sheetAuswertungName']);
-  
-  // ### Sheet Protection ###
-  var protection = yourNewSheet.protect().setDescription('Eval Protection');  
-  var me = Session.getEffectiveUser();
-  
-  protection.addEditor(me);
-  protection.removeEditors(protection.getEditors());
-  if (protection.canDomainEdit()) {
-    protection.setDomainEdit(false);
-  }*/
-  
-  activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  spreadsheets=activeSpreadsheet.getSheets();  
-  
-  var firstRowOfUserData;
+  var spreadsheets=activeSpreadsheet.getSheets();
   
   // Walk through sheets to get users  
   for (var i = 0; i < spreadsheets.length; i++) {
     
-    var row = 1;
-  
-    //yourNewSheet.getRange(row, 1).setValue(settings['ratedPersonText']).setFontWeight("bold");
-    
-    row++;
-    
-    var bewerteterSheet = spreadsheets[i];
+    var bewerteterSheet = spreadsheets[i];  
     var bewerteter = bewerteterSheet.getName();
     
-    Logger.log('Bewerteter: ' + bewerteter);
     if(bewerteter != settings['sheetAuswertungName'] && bewerteter.indexOf(settings['deletionMarker']) != 0 && bewerteter != settings['nameVorlage'] ){
       
       SpreadsheetApp.setActiveSheet(bewerteterSheet);
       
-      //yourNewSheet.getRange(row, 1).setValue(bewerteter);
-      row++;
+      createUserEvaluation(bewerteterSheet);
+      
+      
+    }
+  }
+  //resizeAllColumns(yourNewSheet, 2);
+}
+
+function evalActiveUser() {
+  
+  Logger.log("Starting Acitve User Eval Gen");
+  
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+      
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var activeSheet=activeSpreadsheet.getActiveSheet();
+  var bewerteter = activeSheet.getName();
+  
+  
+  
+  if(bewerteter != settings['sheetAuswertungName'] && bewerteter.indexOf(settings['deletionMarker']) != 0 && bewerteter != settings['nameVorlage'] ){
+    createUserEvaluation(activeSheet);  
+  }
+  
+}
+
+function createUserEvaluation(bewerteterSheet){
+  
+  // Get important Data
+  var users = generateUsernameArr();
+  var nCompetences = (parseInt(letterToColumn(settings['colLastGrade'])) - parseInt(letterToColumn(settings['colFirstGrade'])))+1;
+  var bewerteter = bewerteterSheet.getName();
+  var firstRowOfUserData;
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var spreadsheets=activeSpreadsheet.getSheets();
+  
+  //yourNewSheet.getRange(row, 1).setValue(bewerteter);
+  var row = 1;
+  row++;row++;
       
       /*
        * Get ranges
@@ -531,16 +533,8 @@ function auswertung() {
         else{
           bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+")/"+calcCol+(firstRowOfUserData-1)+";2);\"\")").setFontWeight("bold").setNumberFormat("#.###%");
         }
-        
-        
-        
       }
       //row++;
-      
-      
-    }
-  }
-  //resizeAllColumns(yourNewSheet, 2);
 }
 
 function resizeAllColumns(sheet,num){
