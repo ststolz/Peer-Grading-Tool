@@ -67,10 +67,7 @@
 		<td>Delete Marker</td>
 		<td><input type="text" id="deletionMarker" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
-	<tr>
-		<td>Evaluation Sheet</td>
-		<td><input type="text" id="sheetAuswertungName" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
-	</tr>
+	
     <tr>
 		<td>Points to achieve</td>
 		<td><input type="text" id="maxPointsText" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
@@ -88,8 +85,12 @@
 		<td><input type="text" id="competencesText" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
     <tr>
-		<td>Rating per Competence</td>
+		<td>Average per Competence</td>
 		<td><input type="text" id="averageRatingText" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
+	</tr>
+    <tr>
+		<td>Median per Competence</td>
+		<td><input type="text" id="medianRatingText" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
  </table>
     
@@ -137,7 +138,7 @@ function setSettings(settings){
 // 	  document.getElementById("noten").value = settings['noten'];
 	  document.getElementById("nameVorlage").value = settings['nameVorlage'];
 	  document.getElementById("deletionMarker").value = settings['deletionMarker']; 
-	  document.getElementById("sheetAuswertungName").value = settings['sheetAuswertungName']; 
+	  document.getElementById("medianRatingText").value = settings['medianRatingText']; 
       document.getElementById("maxPointsText").value = settings['maxPointsText']; 
       document.getElementById("endRatingText").value = settings['endRatingText']; 
       document.getElementById("ratedPersonText").value = settings['ratedPersonText']; 
@@ -162,7 +163,7 @@ function saveSettings() {
 // 		saveSettings['noten'] = document.getElementById("noten").value;
 		saveSettings['nameVorlage'] = document.getElementById("nameVorlage").value;
 		saveSettings['deletionMarker'] = document.getElementById("deletionMarker").value;
-		saveSettings['sheetAuswertungName'] = document.getElementById("sheetAuswertungName").value;
+		saveSettings['medianRatingText'] = document.getElementById("medianRatingText").value;
         saveSettings['maxPointsText'] = document.getElementById("maxPointsText").value;
         saveSettings['endRatingText'] = document.getElementById("endRatingText").value;
         saveSettings['ratedPersonText'] = document.getElementById("ratedPersonText").value;
@@ -172,11 +173,13 @@ function saveSettings() {
         document.getElementById("saveButton").disabled = true;
         document.getElementById("sheetGenButton").disabled = false;
         document.getElementById("evalGenButton").disabled = false;
+        document.getElementById("activeUserEvaluationButton").disabled = false;
 }
 function onSettingsChange(){
 	document.getElementById("saveButton").disabled = false;
 	document.getElementById("sheetGenButton").disabled = true;
     document.getElementById("evalGenButton").disabled = true;
+    document.getElementById("activeUserEvaluationButton").disabled = true;
 	
 }
 
