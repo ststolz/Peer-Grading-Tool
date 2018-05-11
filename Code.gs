@@ -19,7 +19,7 @@
 // TODO: settings['colLastGrade'] fertig machen
 // TODO: remove bedingte Formatierung from whole sheet before setting it if something has changed (newDataValidation())
 
-var version = 0.52; 
+var version = 0.53; 
 var manualLink = 'https://gitlab.com/st.stolz/Peer-Grading-Tool';
 
 var settings = new Object();
@@ -38,6 +38,7 @@ settings['maxPointsText'] = "Weighted Points";
 settings['endRatingText'] = "Percent";
 settings['ratedPersonText'] = "Rated Student";
 settings['averageRatingText'] = "Average";
+settings['medianRatingText'] = "Median";
 settings['competencesText'] = "Competences";
 
 var documentProperties = PropertiesService.getDocumentProperties();
@@ -480,7 +481,7 @@ function createUserEvaluation(bewerteterSheet){
               // Walk through all cols
               
               Logger.log("nCompetences: "+nCompetences);
-              for(var l = 0; l < nCompetences+1; l++){
+              for(var l = 0; l < nCompetences+2; l++){
                 var val = sheetData[k][parseFloat(letterToColumn(settings['colFirstGrade']))+l-1];
                 
                 if(l<nCompetences){
@@ -498,7 +499,7 @@ function createUserEvaluation(bewerteterSheet){
                   var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                 }
                 
-                /* Calc Row Mean if last col */
+                /* Calc Col Mean */
                 Logger.log("col: "+l+"; lastgrade: "+letterToColumn(settings['colLastGrade']));
                 if(l+letterToColumn(settings['colFirstGrade']) == letterToColumn(settings['colLastGrade'])+1){               	 
                   Logger.log("get it!");
@@ -508,8 +509,7 @@ function createUserEvaluation(bewerteterSheet){
                   var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+settings['colFirstGrade']+(k+1)+":"+settings['colLastGrade']+(k+1)+";\"<>\")";
                   bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
                   
-                }
-                
+                }       
                 
               }               
             }  
@@ -528,14 +528,27 @@ function createUserEvaluation(bewerteterSheet){
         var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-1);
         Logger.log("competences.length-1: "+competences.length+"; x: "+x);
         if(x == nCompetences){
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setFontWeight("bold").setNumberFormat("#.###%");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
         }
         else{
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+")/"+calcCol+(firstRowOfUserData-1)+";2);\"\")").setFontWeight("bold").setNumberFormat("#.###%");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");1) &\" / \"& "+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
         }
       }
-      //row++;
+      row++;
+      bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['medianRatingText']).setFontWeight("bold");
+      for (var x = 0; x < nCompetences+1; x++) {
+        var calcCol = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x);
+        var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-2);
+        Logger.log("competences.length-1: "+competences.length+"; x: "+x);
+        if(x == nCompetences){
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
+        }
+        else{
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");1) &\" / \"&"+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
+        }
+      }
 }
+
 
 function resizeAllColumns(sheet,num){
   
