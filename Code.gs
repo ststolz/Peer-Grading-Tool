@@ -490,8 +490,9 @@ function auswertung() {
                 var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                 
                 /* Calc Row Mean if last col */
-                if(l+1 == colsWithData){               	 
-                  
+                Logger.log("col: "+l+"; lastgrade: "+letterToColumn(settings['colLastGrade']));
+                if(l+letterToColumn(settings['colFirstGrade'])-1 == letterToColumn(settings['colLastGrade'])){               	 
+                  Logger.log("get it!");
                   var firstColData = parseFloat(letterToColumn(settings['colFirstGrade']));
                   var lastColData = parseFloat(letterToColumn(settings['colFirstGrade'])) + colsWithData -2;                	 
                   var rangeGrades = settings['colFirstGrade']+(row)+":"+settings['colLastGrade']+(row); 
@@ -500,7 +501,8 @@ function auswertung() {
                   var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+columnToLetter(firstColData)+(k+1)+":"+columnToLetter(lastColData)+(k+1)+";\"<>\")";
                   bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
                   
-                }                 
+                }          
+                
                 
               }               
             }  
