@@ -102,19 +102,28 @@
 		
 	</tr>
     <tr>
-		<td colspan="3">Generate User Sheets</td>        
+		<td colspan="3">Create User Sheet</td>        
     </tr>
     <tr>		
-        <td><button type="button" onClick="generateSheets(false)" id="sheetGenButton" class="create">Create</button></td>
-        <td><button type="button" onClick="generateSheets(true)" id="sheetGenButton" class="create">Update</button></td>
+        <td><button type="button" onClick="generateAllUsers(false)" id="sheetGenAllButton" class="create">ALL</button></td>
+        <td><button type="button" onClick="startGenerateSelectedUser()" id="sheetGenSelButton">Selected User</button></td>
         <td></td>
 	</tr>
+    
     <tr>
 		<td colspan="3">Generate Evaluation Section</td>        
     </tr>
     <tr>
-		<td><button type="button" onClick="generateEvaluationSheet()" id="evalGenButton" class="create">All Users</button></td>
-        <td colspan="2"><button type="button" onClick="activeUserEvaluation()" id="activeUserEvaluationButton" class="create">Active User</button></td>
+		<td><button type="button" onClick="startGenerateEvaluation()" id="evalGenButton" class="create">All Users</button></td>
+        <td colspan="2"><button type="button" onClick="startGenerateEvaluationActiveUser()" id="activeUserEvaluationButton">Active User</button></td>
+        <td></td>
+	</tr>
+    <tr>
+		<td colspan="3">Update User Sheet</td>        
+    </tr>
+    <tr>		
+        <td><button type="button" onClick="generateAllUsers(true)" id="sheetUpdateAllButton">ALL</button></td>
+        <td><button type="button" onClick="startUpdateActiveUser()" id="sheetUpdateActiveButton">Active User</button></td>
         <td></td>
 	</tr>
     
@@ -189,28 +198,41 @@ function runningFeedback(){
     
 }
 
-function generateSheets(update) {
+function generateAllUsers(update) {
     runningFeedback();
 	google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
-    .generateSheets(update);    
-    
+    .startGenerateAllUsers(update);
 }
-function activeUserEvaluation(){
+function startUpdateActiveUser() {
     runningFeedback();
 	google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
-    .evalActiveUser();    
+    .startUpdateActiveUser();
+}
+function startGenerateSelectedUser() {
+    runningFeedback();
+	google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .startGenerateSelectedUser();
+}
+function startGenerateEvaluationActiveUser(){
+    runningFeedback();
+	google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .startGenerateEvaluationActiveUser();    
 }
 
-function generateEvaluationSheet() {
+function startGenerateEvaluation() {
     runningFeedback();
 	google.script.run
     .withSuccessHandler(onSuccess)
     .withFailureHandler(onFailure)
-    .auswertung();
+    .startGenerateEvaluation();
 }
 function onSuccess() {
     var div = document.getElementById('result');

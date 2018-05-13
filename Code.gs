@@ -43,7 +43,33 @@ settings['competencesText'] = "Competences";
 
 var documentProperties = PropertiesService.getDocumentProperties();
 
+var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+var spreadsheets=activeSpreadsheet.getSheets();
+
+var vorlageSheet;
+var vorlageSheetRange;
+var vorlageSheetData;
+// User Array
+var users;
+//Feststellen wie viele Spalten und Zeilen in Tabelle  
+var rowsN;
+var colsN;
+
 getDocumentProperties();
+
+function initTemplateSheet(){
+  vorlageSheet = searchSheet(settings['nameVorlage']);
+  // ### Search for Vorlage ###  
+  if( ! vorlageSheet){
+    Browser.msgBox('No Sheet with name '+settings['nameVorlage']+' found. I am loading an example Template. Please adapt this and start again.');
+    sheetFromTemplate("1NjQnLFDq6FQ4eXUt9lQOfMj8OD_jQB169i9JbPAcH08", settings['nameVorlage']);
+    throw new Error("Stopping execution - no template found!");
+  }  
+  vorlageSheetRange = vorlageSheet.getDataRange();
+  vorlageSheetData = vorlageSheetRange.getValues();
+  rowsN = vorlageSheetData.length;
+  colsN = vorlageSheetData[0].length;
+}
 
 function getDocumentProperties(){
 	for (var k in settings){
@@ -127,10 +153,13 @@ function searchSheet(name){
   return false;
 }
 
+function initUsernameArr(){
+  users = generateUsernameArr();
+}
+
 function generateUsernameArr(){
-	Logger.log("Usernames!");
-  var vorlageSheet = searchSheet(settings['nameVorlage']);
-  var vorlageSheetData = vorlageSheet.getDataRange().getValues();
+  Logger.log("Generate Usernames!");
+  
   var users = new Array(vorlageSheetData.length-(settings['rowFirstData']-1));
   
   for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {      
@@ -155,33 +184,9 @@ function sheetFromTemplate(templateID, sheetName){
   return;
 }
 
-function generateSheets(update){    
-  
-  Logger.log("Generate Sheets");
-  Logger.log("sheetAuswertungName: "+settings['sheetAuswertungName']);
-	
+function processTemplateSheet(){
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
   
-  var isFirstRun = true;
-  
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var spreadsheets=activeSpreadsheet.getSheets();
-  
-  var ui = SpreadsheetApp.getUi(); 
-  if(spreadsheets.length > 1){    
-      isFirstRun = false;   
-  }
-  
-  // ### Search for Vorlage ###
-  var vorlageSheet = searchSheet(settings['nameVorlage']);
-  if( ! vorlageSheet){
-    Browser.msgBox('No Sheet with name '+settings['nameVorlage']+' found. I am loading an example Template. Please adapt this and start again.');
-    sheetFromTemplate("1NjQnLFDq6FQ4eXUt9lQOfMj8OD_jQB169i9JbPAcH08", settings['nameVorlage']);
-    throw new Error("Stopping execution - no template found!");
-  }  
-  
-  var vorlageSheetRange = vorlageSheet.getDataRange();
-    
   // ### Protect Vorlage ###
   var protection = vorlageSheet.protect().setDescription('Template Protection');  
   var me = Session.getEffectiveUser();   
@@ -191,16 +196,9 @@ function generateSheets(update){
   if (protection.canDomainEdit()) {
     protection.setDomainEdit(false);
   }
-  
-  var vorlageSheetData = vorlageSheetRange.getValues();
-  //Feststellen wie viele Spalten und Zeilen in Tabelle  
-  var rowsN = vorlageSheetData.length;
-  var colsN = vorlageSheetData[0].length;
+   
   
   Logger.log("Start username ");
- 
-  // Get User Array
-  var users = generateUsernameArr();
   
   /**
     * Validation that data in Range of allowed points
@@ -220,90 +218,68 @@ function generateSheets(update){
     }
   }
   
+}
+
+function startUpdateActiveUser(){
+  Logger.log("Starting Acitve User Update");
   
-  // ### Walk through lines with Usernames ###
-  for(var i = 0; i < users.length; i++){ 
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+  
+  initTemplateSheet();
+  initUsernameArr();
+  
+  var activeSheet=activeSpreadsheet.getActiveSheet();
+  var username = activeSheet.getName();    
+  
+  if(username != settings['sheetAuswertungName'] && username.indexOf(settings['deletionMarker']) != 0 && username != settings['nameVorlage'] ){
+    generateUser(true, username);
+  }
+}
+
+function startGenerateAllUsers(update){
+  
+  Logger.log("Generating sheets for all users");
+  
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+  
+  initTemplateSheet();
+  initUsernameArr();   
+  
+  processTemplateSheet();  
+  
+   // ### Walk through lines with Usernames ###
+  for(var i = 0; i < users.length; i++){     
     
-    var username = users[i];    
-    
+    var username = users[i];       
     if(username == ""){ continue; }
     
-    var newSheet;
+    Logger.log("Processing User: "+username);
     
-    var isExisting = false;
-    
-    // ### Check if Sheet is already existing ###
-    if(!isFirstRun){
-      newSheet = searchSheet(username);
-      if(newSheet && update){
-        isExisting = true;
-        var existingSheetData = newSheet.getDataRange().getValues();
-        
-        // Update complete sheet except grading data
-        for (var r = 0; r < rowsN; r++) { 
-        	for(var c = 0; c < colsN; c++){
-        		
-        		if(!(r > settings['rowFirstData']-2 && c > letterToColumn(settings['colFirstGrade'])-2 && c < colsN-1)){        			
-        			if(true){
-        				newSheet.getRange(r+1, c+1).setValue(vorlageSheetData[r][c]);
-        			}
-        		}  
-        	}        	
-        }
-      } 
-      else if(newSheet) {
-        continue;
-      }
-    }
-    
-    if(isFirstRun || ! isExisting){
-      newSheet = vorlageSheet.copyTo(activeSpreadsheet);    
-    }
-    
-    // ### Remove old Protections ###
-    var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.RANGE);
-    for (var j = 0; j < protections.length; j++) {
-      var protection = protections[j];
-      protection.remove();      
-    }
-    var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET);
-    for (var j = 0; j < protections.length; j++) {
-      var protection = protections[j];
-      protection.remove();      
-    }
-    
-    // ### Sheet Protection ###
-    var protection = newSheet.protect().setDescription('Sheet Protection');
-    
-    // Bereich berechnen in dem Reviews stehen
-    var unprotected = newSheet.getRange(settings['rowFirstData'],letterToColumn(settings['colFirstGrade']),rowsN - (settings['rowFirstData']-1), colsN - letterToColumn(settings['colFirstGrade']));
-    
-    // Bereich mit Reviews von Protection ausnehmen
-    protection.setUnprotectedRanges([unprotected]);    
-    
-    var me = Session.getEffectiveUser();
-    
-    protection.addEditor(me);
-    protection.removeEditors(protection.getEditors());
-    if (protection.canDomainEdit()) {
-      protection.setDomainEdit(false);
-    }
-    
-    // ### Range Protection ###
-    var protectRange = unprotected.protect().setDescription('Range Protection'); 
-    protectRange.addEditor(me);
-    protectRange.removeEditors(protectRange.getEditors());
-    if (protectRange.canDomainEdit()) {
-      protectRange.setDomainEdit(false);
-    }
-    protectRange.addEditor(username);
-    
-    //protection = protection.addEditor(username);
-    if(newSheet.getName() != username){
-      newSheet.setName(username);
-    }
+    generateUser(update, username);
     
   }
+  
+  markNotExistingUsers();
+  
+}
+
+function startGenerateSelectedUser(){
+  
+  Logger.log("Generating selected user");
+  
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+  
+  initTemplateSheet();
+  
+  username = activeSpreadsheet.getActiveCell().getValue();
+  activeSpreadsheet.addEditor(username);
+  
+  generateUser(false, username);
+  
+}
+
+function markNotExistingUsers(){
+  
   //### Mark not existing Users ###
   for (var i = 0; i < spreadsheets.length; i++) {
     var sheet = spreadsheets[i];
@@ -324,15 +300,104 @@ function generateSheets(update){
   }
 }
 
-function auswertung() {
+function generateUser(update, username){    
   
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
   
+  var isFirstRun = true; 
+  
+  if(spreadsheets.length > 1){    
+      isFirstRun = false;   
+  }       
+    
+  var newSheet;  
+  var isExisting = false;
+  
+  // ### Check if Sheet is already existing ###
+  if(!isFirstRun){
+    newSheet = searchSheet(username);
+    if(newSheet && update){
+      isExisting = true;
+      var existingSheetData = newSheet.getDataRange().getValues();
+      
+      // Update complete sheet except grading data
+      for (var r = 0; r < rowsN; r++) { 
+        for(var c = 0; c < colsN; c++){
+          
+          if(!(r > settings['rowFirstData']-2 && c > letterToColumn(settings['colFirstGrade'])-2 && c < colsN-1)){        			
+            if(true){
+              newSheet.getRange(r+1, c+1).setValue(vorlageSheetData[r][c]);
+            }
+          }  
+        }        	
+      }
+    } 
+    else if(newSheet) {
+      return;
+    }
+  }
+  
+  if(isFirstRun || ! isExisting){
+    newSheet = vorlageSheet.copyTo(activeSpreadsheet);    
+  }
+  
+  // ### Remove old Protections ###
+  var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+  for (var j = 0; j < protections.length; j++) {
+    var protection = protections[j];
+    protection.remove();      
+  }
+  var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET);
+  for (var j = 0; j < protections.length; j++) {
+    var protection = protections[j];
+    protection.remove();      
+  }
+  
+  // ### Sheet Protection ###
+  var protection = newSheet.protect().setDescription('Sheet Protection');
+  
+  // Bereich berechnen in dem Reviews stehen
+  var unprotected = newSheet.getRange(settings['rowFirstData'],letterToColumn(settings['colFirstGrade']),rowsN - (settings['rowFirstData']-1), colsN - letterToColumn(settings['colFirstGrade']));
+  
+  // Bereich mit Reviews von Protection ausnehmen
+  protection.setUnprotectedRanges([unprotected]);    
+  
+  var me = Session.getEffectiveUser();
+  
+  protection.addEditor(me);
+  protection.removeEditors(protection.getEditors());
+  if (protection.canDomainEdit()) {
+    protection.setDomainEdit(false);
+  }
+  
+  // ### Range Protection ###
+  var protectRange = unprotected.protect().setDescription('Range Protection'); 
+  protectRange.addEditor(me);
+  protectRange.removeEditors(protectRange.getEditors());
+  if (protectRange.canDomainEdit()) {
+    protectRange.setDomainEdit(false);
+  }
+  protectRange.addEditor(username);
+  
+  //protection = protection.addEditor(username);
+  if(newSheet.getName() != username){
+    newSheet.setName(username);
+  }
+    
+  
+  
+}
+
+function startGenerateEvaluation() {
+  
+  if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
+  
+  
+  initTemplateSheet(); 
+  initUsernameArr();
+  
   Browser.msgBox('Trying to make evaluation section for all users. If this exceeds maximum execution time, create the rest of the sheets per individual user.');
       
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var spreadsheets=activeSpreadsheet.getSheets();
-  
   // Walk through sheets to get users  
   for (var i = 0; i < spreadsheets.length; i++) {
     
@@ -351,16 +416,19 @@ function auswertung() {
   //resizeAllColumns(yourNewSheet, 2);
 }
 
-function evalActiveUser() {
+function startGenerateEvaluationActiveUser() {
   
   Logger.log("Starting Acitve User Eval Gen");
   
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
-      
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var activeSheet=activeSpreadsheet.getActiveSheet();
-  var bewerteter = activeSheet.getName();
   
+  initTemplateSheet();
+  initUsernameArr();
+  
+  
+  
+  var activeSheet=activeSpreadsheet.getActiveSheet();
+  var bewerteter = activeSheet.getName();  
   
   
   if(bewerteter != settings['sheetAuswertungName'] && bewerteter.indexOf(settings['deletionMarker']) != 0 && bewerteter != settings['nameVorlage'] ){
@@ -372,12 +440,9 @@ function evalActiveUser() {
 function createUserEvaluation(bewerteterSheet){
   
   // Get important Data
-  var users = generateUsernameArr();
   var nCompetences = (parseInt(letterToColumn(settings['colLastGrade'])) - parseInt(letterToColumn(settings['colFirstGrade'])))+1;
   var bewerteter = bewerteterSheet.getName();
   var firstRowOfUserData;
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var spreadsheets=activeSpreadsheet.getSheets();
   
   //yourNewSheet.getRange(row, 1).setValue(bewerteter);
   var row = 1;
