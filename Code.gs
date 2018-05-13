@@ -174,7 +174,7 @@ function getTeamplateUserField(username){
   userCell = null;
   for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {      
     if(username == trim(vorlageSheetData[k][letterToColumn(settings['spalteUsernamen'])-1])){
-      var userCell = vorlageSheet.getRange(k, letterToColumn(settings['spalteUsernamen']));
+      var userCell = vorlageSheet.getRange((k+1), letterToColumn(settings['spalteUsernamen']));
     }    
   }
   return userCell;
@@ -317,6 +317,9 @@ function generateUser(update, username){
   
   if(!isOwner()) throw new Error("Stopping execution - you are not the owner of this spreadsheet!");
   
+  templateUserField = getTeamplateUserField(username);
+  templateUserField.setNumberFormat('"☒" @');
+  
   var isFirstRun = true; 
   
   if(spreadsheets.length > 1){    
@@ -346,6 +349,7 @@ function generateUser(update, username){
       }
     } 
     else if(newSheet) {
+      templateUserField.setNumberFormat('"☑" @');
       return;
     }
   }
@@ -397,7 +401,7 @@ function generateUser(update, username){
     newSheet.setName(username);
   }
     
-  
+  templateUserField.setNumberFormat('"☑" @');
   
 }
 
