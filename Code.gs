@@ -170,6 +170,16 @@ function generateUsernameArr(){
   return users;  
 }
 
+function getTeamplateUserField(username){
+  userCell = null;
+  for (var k = (settings['rowFirstData']-1), i = 0; k < vorlageSheetData.length; k++, i++) {      
+    if(username == trim(vorlageSheetData[k][letterToColumn(settings['spalteUsernamen'])-1])){
+      var userCell = vorlageSheet.getRange(k, letterToColumn(settings['spalteUsernamen']));
+    }    
+  }
+  return userCell;
+}
+
 function compareUsers(userArr){
   
 }
@@ -278,7 +288,7 @@ function startGenerateSelectedUser(){
   
 }
 
-function markNotExistingUsers(){
+function markNotExistingUsers(deleteOld){
   
   //### Mark not existing Users ###
   for (var i = 0; i < spreadsheets.length; i++) {
@@ -296,6 +306,9 @@ function markNotExistingUsers(){
     	  activeSpreadsheet.deleteSheet(searchSheet(sheetDeletionMarkerName));
       }      
       sheet.setName(sheetDeletionMarkerName);
+    }
+    else if(sheet.getName().indexOf(settings['deletionMarker']) == 0){
+      activeSpreadsheet.deleteSheet(sheet);
     }
   }
 }
