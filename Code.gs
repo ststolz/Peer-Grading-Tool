@@ -206,10 +206,7 @@ function processTemplateSheet(){
   if (protection.canDomainEdit()) {
     protection.setDomainEdit(false);
   }
-   
-  
-  Logger.log("Start username ");
-  
+     
   /**
     * Validation that data in Range of allowed points
     */
@@ -217,7 +214,7 @@ function processTemplateSheet(){
   var rule = SpreadsheetApp.newDataValidation().requireNumberBetween(parseFloat(settings['punkteMin']), parseFloat(settings['punkteMax'])).setAllowInvalid(false).build();
   vorlageSheetGradeRange.setDataValidation(rule);
   
-    
+  Logger.log("Setting edit rights for users");
   // ### Document Edit Rights for Users ###
   for(var i = 0; i < users.length; i++){ 
     var username = users[i];
@@ -227,6 +224,7 @@ function processTemplateSheet(){
       Logger.log(username);
     }
   }
+  Logger.log("Edit rights set");
   
 }
 
@@ -254,10 +252,19 @@ function startGenerateAllUsers(update){
   
   initTemplateSheet();
   initUsernameArr();   
-  
+  Logger.log("Processing Template Sheet");
   processTemplateSheet();  
   
-   // ### Walk through lines with Usernames ###
+  Logger.log("Update user row to remove signs");
+  if(update) {
+    for (var r = settings['rowFirstData']; r <= rowsN; r++) {     
+      Logger.log("Row: "+r);
+      vorlageSheet.getRange(r, letterToColumn(settings['spalteUsernamen'])).setNumberFormat('"☒" @');
+    }
+  }
+  
+  // ### Walk through lines with Usernames ###
+  Logger.log("Walking users array");
   for(var i = 0; i < users.length; i++){     
     
     var username = users[i];       
@@ -338,8 +345,7 @@ function generateUser(update, username){
       
       // Update complete sheet except grading data
       for (var r = 0; r < rowsN; r++) { 
-        for(var c = 0; c < colsN; c++){
-          
+        for(var c = 0; c < colsN; c++){          
           if(!(r > settings['rowFirstData']-2 && c > letterToColumn(settings['colFirstGrade'])-2 && c < colsN-1)){        			
             if(true){
               newSheet.getRange(r+1, c+1).setValue(vorlageSheetData[r][c]);
@@ -355,8 +361,12 @@ function generateUser(update, username){
   }
   
   if(isFirstRun || ! isExisting){
-    newSheet = vorlageSheet.copyTo(activeSpreadsheet);    
+    newSheet = vorlageSheet.copyTo(activeSpreadsheet);
+    for (var r = 0; r < rowsN; r++) {     
+      newSheet.getRange(r+1, settings['spalteUsernamen']).setNumberFormat('@');        
+    }     
   }
+  
   
   // ### Remove old Protections ###
   var protections = newSheet.getProtections(SpreadsheetApp.ProtectionType.RANGE);
