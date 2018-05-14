@@ -338,8 +338,10 @@ function generateUser(update, username){
   
   // ### Check if Sheet is already existing ###
   if(!isFirstRun){
+    Logger.log("Check if already existing");
     newSheet = searchSheet(username);
     if(newSheet && update){
+      Logger.log("Is existing and updating");
       isExisting = true;
       var existingSheetData = newSheet.getDataRange().getValues();
       
@@ -355,16 +357,18 @@ function generateUser(update, username){
       }
     } 
     else if(newSheet) {
+      Logger.log("Is existing");
       templateUserField.setNumberFormat('"☑" @');
       return;
     }
   }
   
   if(isFirstRun || ! isExisting){
+    Logger.log("Make copy because doesn't exist");
     newSheet = vorlageSheet.copyTo(activeSpreadsheet);
-    for (var r = 0; r < rowsN; r++) {     
-      newSheet.getRange(r+1, settings['spalteUsernamen']).setNumberFormat('@');        
-    }     
+    for (var r = settings['rowFirstData']; r <= rowsN; r++) {     
+      newSheet.getRange(r, letterToColumn(settings['spalteUsernamen'])).setNumberFormat('@');        
+    }         
   }
   
   
