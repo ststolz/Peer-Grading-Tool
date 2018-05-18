@@ -507,8 +507,8 @@ function createUserEvaluation(bewerteterSheet){
        */
       var competencesHeader = bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))-1);
       var weightingHeader = bewerteterSheet.getRange(row+1, parseFloat(letterToColumn(settings['colFirstGrade']))-1);       
-      competencesHeader.setValue(settings['competencesText']).setFontWeight("bold").setBackground(skillNameRange.getBackground());
-      weightingHeader.setValue(settings['maxPointsText']).setFontWeight("bold").setBackground(skillWeightRange.getBackground());
+      competencesHeader.clearFormat().setValue(settings['competencesText']).setFontWeight("bold").setBackground(skillNameRange.getBackground());
+      weightingHeader.clearFormat().setValue(settings['maxPointsText']).setFontWeight("bold").setBackground(skillWeightRange.getBackground());
             
       // Draw heading borders
       bewerteterSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+row+":"+settings['colLastGrade']+row).setBorder(true, true, true, true, false, false);
@@ -536,7 +536,7 @@ function createUserEvaluation(bewerteterSheet){
       Logger.log("#1: ");
       var resultsHeader = bewerteterSheet.getRange(row+1, parseInt(letterToColumn(settings['colLastGrade']))+1);
       Logger.log("#2");
-      resultsHeader.setValue(settings['endRatingText']).setFontWeight("bold");
+      resultsHeader.clearFormat().setValue(settings['endRatingText']).setFontWeight("bold");
       Logger.log("#3");
       
       var counterUsers = 0;
@@ -561,7 +561,7 @@ function createUserEvaluation(bewerteterSheet){
           
           
           
-          bewerteterSheet.getRange(row, 2).setValue(bewerter).setBackground(userNameCol.getBackground());
+          bewerteterSheet.getRange(row, 2).clearFormat().setValue(bewerter).setBackground(userNameCol.getBackground());
           
           var sheetData = sheet.getDataRange().getValues();           
           
@@ -589,12 +589,12 @@ function createUserEvaluation(bewerteterSheet){
                     competences[l][counterUsers] = val;                                 
                   }
                   else{
-                    var cell = bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("");
+                    var cell = bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).clearFormat().setValue("");
                   }
                   
                   var columnGrade = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+l);
                   /* set link to user rating value */
-                  var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
+                  var cell =  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).clearFormat().setValue("=IF('"+bewerter+"'!"+columnGrade+(k+1)+" <> \"\"; '"+bewerter+"'!"+columnGrade+(k+1)+" * '"+settings['nameVorlage']+"'!"+columnGrade+(settings['rowFirstData']-1)+";\"\")");
                 }
                 
                 /* Calc Col Mean */
@@ -605,7 +605,7 @@ function createUserEvaluation(bewerteterSheet){
                   var rangeWeights = settings['colFirstGrade']+(row_weighting)+":"+settings['colLastGrade']+(row_weighting);
                   
                   var sumWeights = "SUMIFS("+rangeWeights+";'"+bewerter+"'!"+settings['colFirstGrade']+(k+1)+":"+settings['colLastGrade']+(k+1)+";\"<>\")";
-                  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
+                  bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+l).clearFormat().setValue("=IF("+sumWeights+">0;ROUND(SUM("+rangeGrades+")/("+sumWeights+");2);\"\")").setNumberFormat("#.###%");
                   
                 }       
                 
@@ -620,29 +620,29 @@ function createUserEvaluation(bewerteterSheet){
       //draw border around ratings
       bewerteterSheet.getRange(columnToLetter(letterToColumn(settings['colFirstGrade'])-1)+(row-counterUsers)+":"+settings['colLastGrade']+(row-1)).setBorder(true, true, true, true, false, false);
       // Calc mean values
-      bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['averageRatingText']).setFontWeight("bold");
+      bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).clearFormat().setValue(settings['averageRatingText']).setFontWeight("bold");
       for (var x = 0; x < nCompetences+1; x++) {
         var calcCol = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x);
         var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-1);
         Logger.log("competences.length-1: "+competences.length+"; x: "+x);
         if(x == nCompetences){
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).clearFormat().setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
         }
         else{
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");1) &\" / \"& "+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).clearFormat().setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(AVERAGE("+rangeForCalc+");1) &\" / \"& "+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
         }
       }
       row++;
-      bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).setValue(settings['medianRatingText']).setFontWeight("bold");
+      bewerteterSheet.getRange(row, letterToColumn(settings['colFirstGrade'])-1).clearFormat().setValue(settings['medianRatingText']).setFontWeight("bold");
       for (var x = 0; x < nCompetences+1; x++) {
         var calcCol = columnToLetter(parseFloat(letterToColumn(settings['colFirstGrade']))+x);
         var rangeForCalc = calcCol+firstRowOfUserData+":"+calcCol+(row-2);
         Logger.log("competences.length-1: "+competences.length+"; x: "+x);
         if(x == nCompetences){
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).clearFormat().setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");2);\"\")").setNumberFormat("#.###%");
         }
         else{
-          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");1) &\" / \"&"+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
+          bewerteterSheet.getRange(row, parseFloat(letterToColumn(settings['colFirstGrade']))+x).clearFormat().setValue("=IF(COUNT("+rangeForCalc+")>0;ROUND(MEDIAN("+rangeForCalc+");1) &\" / \"&"+calcCol+(firstRowOfUserData-1)+";\"\")").setNumberFormat("0.0");
         }
       }
 }
