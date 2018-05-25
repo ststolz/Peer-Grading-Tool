@@ -19,7 +19,7 @@
 // TODO: settings['colLastGrade'] fertig machen
 // TODO: remove bedingte Formatierung from whole sheet before setting it if something has changed (newDataValidation())
 
-var version = 0.54; 
+var version = 0.55; 
 var manualLink = 'https://gitlab.com/st.stolz/Peer-Grading-Tool';
 
 var settings = new Object();
