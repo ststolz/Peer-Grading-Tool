@@ -93,6 +93,8 @@
 		<td><input type="text" id="medianRatingText" style="width: 100px;" onkeyup="onSettingsChange()" onchange="onSettingsChange()"></td>
 	</tr>
  </table>
+ 
+<div id='result' class='block current' style='display:none;'>Messages</div>
     
 <table style="padding-left: 5px;">
     <tr>
@@ -133,7 +135,7 @@
   
 </div>    
 
-<div id='result' class='block gray'></div>
+
 
 <script>
 getSettings();
@@ -180,22 +182,36 @@ function saveSettings() {
         saveSettings['averageRatingText'] = document.getElementById("averageRatingText").value;
         google.script.run.saveDocumentProperties(saveSettings);
         document.getElementById("saveButton").disabled = true;
-        document.getElementById("sheetGenButton").disabled = false;
-        document.getElementById("evalGenButton").disabled = false;
-        document.getElementById("activeUserEvaluationButton").disabled = false;
+        buttonsSheetCreationEnable();
 }
 function onSettingsChange(){
 	document.getElementById("saveButton").disabled = false;
-	document.getElementById("sheetGenButton").disabled = true;
+    buttonsSheetCreationDisable();
+}
+
+function buttonsSheetCreationDisable(){
+    document.getElementById("sheetGenAllButton").disabled = true;
+	document.getElementById("sheetGenSelButton").disabled = true;
     document.getElementById("evalGenButton").disabled = true;
     document.getElementById("activeUserEvaluationButton").disabled = true;
-	
+    document.getElementById("sheetUpdateAllButton").disabled = true;
+    document.getElementById("sheetUpdateActiveButton").disabled = true;
+}
+
+function buttonsSheetCreationEnable(){
+    document.getElementById("sheetGenAllButton").disabled = false;
+	document.getElementById("sheetGenSelButton").disabled = false;
+    document.getElementById("evalGenButton").disabled = false;
+    document.getElementById("activeUserEvaluationButton").disabled = false;
+    document.getElementById("sheetUpdateAllButton").disabled = false;
+    document.getElementById("sheetUpdateActiveButton").disabled = false;
 }
 
 function runningFeedback(){
+    buttonsSheetCreationDisable();
     var div = document.getElementById('result');
+    div.style.display = 'block';
     div.innerHTML = '<div>Running...<br><img src="https://lh3.googleusercontent.com/EBdoICM79nLvDyKJmCLtgnfdBIJbQyCxZlTupaA-bEdx5vGK9_C8XOoBswkupLwFvqMyhV7ldrJGI1vZU9jBaFxj7QmJWUc_NKx3P_iH6bLAYHsn_HrchBrP915CYX1Y5UUtxO2afFMUC5aCNN0LdXgC51VPg2zVEvsBwqYNoNDO6orW4OMa4rl38GVYHpgxFZ2qYFt5ZFdr_GkW6RovGbwYM1dC5ynZLnufB2rblHmR7KNybmfuAaP-bxBL5I6v05RDnDhL3yv5Hxge_sQgq3G-xyAvp2UYvdCJl5PuJMMQ95OinWy1QwiOWrRdu58pihAhJcdCGZhZDYhDc4XM0MnKVad-OK0SgK8Tgbhr75BTiAOmKFXCuhk0qbMmILu5Xhd8nWiQsgMq2Z_Fx32JxaQLszpxTC27-2-UVJLzr8sqljeEMyNo8j2vSi0q5H3G2izriMOmZRbCymYF-nMdHBv63gRkrlFRuenJFA18kVhbrBVfhMNcrixsJZXLe4qKC2crElvr9BFSgi9x_QUFwiMVhRFbmY0hEGQg9JQbS-BAzpPKi3sw19WNaQ1DJBdQz76PMBdc3_WFehcqKqHBtU8arp4BsVZYDRai64QXGbo55eAjng=s96-no"></div>';
-    
 }
 
 function generateAllUsers(update) {
@@ -236,11 +252,18 @@ function startGenerateEvaluation() {
 }
 function onSuccess() {
     var div = document.getElementById('result');
-    div.innerHTML = '<div>Sucess!</div>';
+    div.innerHTML = 'Sucess!';
+    div.classList.remove("current");
+    div.classList.add("gray");    
+    div.style.display = 'none';
+    buttonsSheetCreationEnable();
   }
 function onFailure(error) {
     var div = document.getElementById('result');
-    div.innerHTML = '<div>'+error.message+'</div>';
+    div.innerHTML = error.message;
+    div.classList.remove("current");
+    div.classList.add("error");
+    buttonsSheetCreationEnable();
   }
 function clickAction(){    
     google.script.run
