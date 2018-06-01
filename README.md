@@ -2,7 +2,7 @@
 
 **Peer-Grading Tool** is a plugin for *Google Spreadsheets*. It is intended for educational use cases where students should grade each other.
 
-All you need are the Gmail Addresses (Google Users) of your students. Then *Peer-Grading Tool* creates a sheet for each stundent which is protected from other users. There students can rate work of their attendees (e.g. a presentation).
+All you need are the Gmail Addresses (Google Users) of your students. Then *Peer-Grading Tool* creates a sheet for each student which is protected from other users. There students can rate work of their attendees (e.g. a presentation).
 
 You have several options for configuration of this process. This include:
 
