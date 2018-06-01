@@ -10,7 +10,7 @@ You have several options for configuration of this process. This include:
 * **Weighting** of every Skill
 * **Rating Points** - Min and Max points students can use for Rating
 
-![Grading process of Peer-Grading Tool](images/grading-process-of-peer-grading-tool.gif)
+![Peer Grading overview](images/peer-grading-overview.gif)
 --
 _The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**. The email addresses used (datster1@, ...), are placeholders for your students addresses._
 
@@ -39,12 +39,6 @@ Most people have a Google Account. It is used for Android App Store (Google Play
 
 If you have no Account at all, go to https://accounts.google.com and register (click "Create Account"). If you have logged in, you can go on.
 
-## Getting it up and running
-
-![Sheet generation process of Peer-Grading Tool](images/sheet-generation-process-of-peer-grading-tool.gif)
---
-_The intention of this animation is a fast overview. For learning how to use this tool, refer to section **Installation**. The email addresses used (datster1@, ...), are placeholders for your students addresses._
-
 ### Create a new Google Spreadsheet
 
 Go to https://drive.google.com and open the folder you want to add the spreadsheet to. Then click "New" - "Google Sheets". There click on "Add-ons" - "Get add-ons". Search now for "Peer-Grading Tool" and install it.
@@ -55,7 +49,7 @@ If you have your own template, just copy it and go on.
 
 ### Use Peer-Grading tool
 
-For usage manual refer to the [corresponding manual](manual/use_peer-grading-tool.md). 
+For usage manual refer to the [corresponding manual](manual/use_peer-grading-tool.md).
 
 # Tipps
 
