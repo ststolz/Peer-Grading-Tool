@@ -1,3 +1,15 @@
+# Permissions needed by the add-on Peer-Grading Tool
+
+Read here why the script needs following permissions. It will not collect any user data!
+
+## View and manage your spreadsheets in Google Drive
+
+This permission is needed so that the add-on can modify the spreadsheet it is installed to, to do his work. The only function which needs access to other spreadsheets is to load the default template into your spreadsheet. The script will not access any data of other sheets!
+
+## Display and run third-party web content in prompts and sidebars inside Google applications
+
+This is only needed to offer you a functional sidebar.
+
 # Privacy Policy
 
 Stefan Stolz built the Peer-Grading Tool app as an Open Source app. This SERVICE is provided by Stefan Stolz at no cost and is intended for use as is.

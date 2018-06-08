@@ -55,9 +55,17 @@ For usage manual refer to the [corresponding manual](manual/use_peer-grading-too
 
 1. Force your students to think about their rating. For example you could want them to give a comment for every rating which is better than the standard rating.
 
-# Permissions
+# Permissions needed by the add-on Peer-Grading Tool
 
-Read here why the script needs following permissions. We will not collect user data!
+Read here why the script needs following permissions. We will not collect any user data!
+
+## View and manage your spreadsheets in Google Drive
+
+This permission is needed so that the add-on can modify the spreadsheet it is installed in, to do his work. The only function which needs access to other spreadsheets is to load the default template into your spreadsheet.
+
+## Display and run third-party web content in prompts and sidebars inside Google applications
+
+This is only needed to offer you a functional sidebar.
 
 # Literature
 
